@@ -50,7 +50,7 @@ class SignIn extends React.Component {
         try {
           await signIn(values.uid, values.password)
           const user = await findUser(values.uid)
-          if (!user.data.active) {
+          if (user.data.block) {
             signOut()
             errorAlert('Usuário inativo', 'Consulte administrador do sistema', 5)
             this.setState({

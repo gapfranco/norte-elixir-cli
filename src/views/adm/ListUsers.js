@@ -33,19 +33,20 @@ class ListUsers extends React.Component {
         width={'100%'}
         ro={this.state.ro}
         qry={[
-          { key: 'id', name: 'ID', type: 'number' },
+          { key: 'uid', name: 'ID', type: 'text' },
           { key: 'email', name: 'E-Mail', type: 'text' },
-          { key: 'username', name: 'Nome', type: 'text' }
+          { key: 'name', name: 'Nome', type: 'text' }
         ]}
         table={[
           {
             title: 'Id',
-            width: 100,
-            dataIndex: 'id'
+            width: 200,
+            dataIndex: 'uid'
           },
           {
             title: 'Name',
-            dataIndex: 'username'
+            width: 350,
+            dataIndex: 'name'
           },
           {
             title: 'E-Mail',
@@ -58,7 +59,7 @@ class ListUsers extends React.Component {
             render: admin => <Checkbox checked={admin} />
           },
           {
-            title: 'Bloqueio',
+            title: 'Bloqueado',
             dataIndex: 'block',
             width: 80,
             render: block => <Checkbox checked={block} />

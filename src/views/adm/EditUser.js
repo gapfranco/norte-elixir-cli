@@ -2,7 +2,7 @@ import React from 'react'
 
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Form, Icon, Input, Button, Row, Col, message, Card, Popconfirm, Checkbox } from 'antd'
+import { Form, Input, Button, Row, Col, message, Card, Popconfirm, Checkbox } from 'antd'
 import BasePage from '~/src/components/BasePage'
 
 import { showUser, updateUser, createUser, deleteUser, isAdmin } from '~/src/services/userApi'
@@ -22,7 +22,7 @@ class EditUser extends React.Component {
     const admin = await isAdmin(this.props.user)
     if (id === '+') {
       this.setState({
-        user: { email: '', username: '', admin: false, block: false },
+        user: { email: '', name: '', admin: false, block: false },
         loaded: true,
         id: 0,
         admin
@@ -181,17 +181,18 @@ class EditUser extends React.Component {
               </Row>
             </Form.Item>
             <Form.Item label={'Nome'}>
-              {getFieldDecorator('username', {
+              {getFieldDecorator('name', {
                 rules: [
                   {
                     required: true,
                     message: 'Informe o nome'
                   }
                 ],
-                initialValue: this.state.user.username
+                initialValue: this.state.user.name
               })(<Input placeholder='Nome' disabled={!this.state.admin} />)}
             </Form.Item>
-            {!this.state.id ? (
+
+            {/* {!this.state.id ? (
               <Form.Item label={'Senha'}>
                 {getFieldDecorator('password', {
                   rules: [
@@ -209,6 +210,7 @@ class EditUser extends React.Component {
                 )}
               </Form.Item>
             ) : null}
+
             {!this.state.id ? (
               <Form.Item label={'Confirma Senha'}>
                 {getFieldDecorator('password_confirmation', {
@@ -227,7 +229,8 @@ class EditUser extends React.Component {
                   />
                 )}
               </Form.Item>
-            ) : null}
+            ) : null} */}
+
             {this.state.id ? (
               <Form.Item {...tailFormItemLayout}>
                 {getFieldDecorator('admin', {
@@ -247,7 +250,7 @@ class EditUser extends React.Component {
                   initialValue: this.state.user.block
                 })(
                   <Checkbox disabled={!this.state.admin || this.state.id === this.props.user}>
-                    Usuário bloqueado
+                    Usuário ativo
                   </Checkbox>
                 )}
               </Form.Item>
