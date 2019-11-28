@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { Form, Icon, Input, Button, Row, message, Card } from 'antd'
 import BasePage from '~/src/components/BasePage'
+import { errorAlert } from '~/src/services/utils'
 
 import { changePassword } from '~/src/services/authApi'
 
@@ -19,27 +20,18 @@ class ChangePassword extends React.Component {
     }
   }
 
-  handleSubmit = e => {
-    e.preventDefault()
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        console.log('Received values of form: ', values)
-      }
-    })
-  }
-
   validSubmit = e => {
     e.preventDefault()
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        changePassword(this.props.user, values.current_password, values.new_password)
+        changePassword(values.current_password, values.new_password)
           .then(() => {
             message.info('Senha foi alterada com sucesso')
             this.props.form.resetFields()
             this.props.history.push('/')
           })
           .catch(() => {
-            message.error('Erro. Verifique se informou senha atual corretamente')
+            errorAlert('Usuário', 'Verifique se errou a senha atual', 5)
           })
       }
     })

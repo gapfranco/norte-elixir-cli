@@ -122,7 +122,7 @@ class SignIn extends React.Component {
               <Button type='primary' htmlType='submit' loading={this.state.isLoading}>
                 Conectar
               </Button>
-              <Button onClick={() => this.props.history.push('/signup')}>Criar conta de empresa</Button>
+              <Button onClick={() => this.props.history.push('/signup')}>Criar conta empresarial</Button>
               <Button onClick={() => this.props.history.push('/forgotpassword')} type='link'>
                 Criar senha
               </Button>

@@ -25,9 +25,9 @@ export function newPassword (token, password) {
   return axios.put(`${apiUrl}/password`, body)
 }
 
-export function changePassword (userId, oldPassword, newPassword) {
+export function changePassword (oldPassword, newPassword) {
   const body = { oldPassword, newPassword }
-  return axios.post(`${apiUrl}/password/${userId}`, body, getAuthHeader())
+  return axios.post(`${apiUrl}/password-change`, body, getAuthHeader())
 }
 
 export function signOut () {
