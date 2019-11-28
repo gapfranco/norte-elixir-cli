@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
 import { Form, Icon, Input, Button, Row, Col, message, Card, Alert } from 'antd'
-import { clientExists } from '~/src/services/clientApi'
+import { clientFind } from '~/src/services/clientApi'
 import { signUpUser } from '~/src/services/authApi'
 import { validEmail } from '~/src/services/validators'
 
@@ -61,9 +61,9 @@ class SignUp extends React.Component {
   verifyClient = async (rule, value, callback) => {
     let ex = false
     if (value) {
-      ex = await clientExists(value)
+      ex = await clientFind(value)
     }
-    if (ex) {
+    if (ex.data) {
       callback(new Error('Já existe cliente com este código'))
     } else {
       callback()

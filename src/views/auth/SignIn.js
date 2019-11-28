@@ -29,7 +29,9 @@ class SignIn extends React.Component {
 
   componentDidMount () {
     const values = queryString.parse(this.props.location.search)
-    this.setState({ codigo: values.uid })
+    this.props.form.setFieldsValue({
+      uid: values.uid
+    })
   }
 
   closeError = () => {

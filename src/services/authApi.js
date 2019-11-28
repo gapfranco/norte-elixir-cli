@@ -11,7 +11,7 @@ export function signIn (uid, password) {
 }
 
 export function signUpUser (cid, clientname, usr, email, username, password) {
-  const body = { cid, clientname, usr, email, username, password }
+  const body = { cid, clientname, usr, email, username, password, password_confirmation: password }
   return axios.post(`${apiUrl}/signup`, body)
 }
 
