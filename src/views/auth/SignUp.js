@@ -70,18 +70,6 @@ class SignUp extends React.Component {
     }
   }
 
-  // verifyUser = async (rule, value, callback) => {
-  //   let ex = false
-  //   if (value) {
-  //     ex = await userExists(value)
-  //   }
-  //   if (ex) {
-  //     callback(new Error(`Já existe usuário com e-mail ${value}`))
-  //   } else {
-  //     callback()
-  //   }
-  // }
-
   render () {
     const { getFieldDecorator } = this.props.form
     return (
@@ -92,14 +80,13 @@ class SignUp extends React.Component {
           style={{ width: 880, marginTop: '32px' }}
         >
           <Alert
-            message='Criar nova empresa e conta'
+            message='Criar nova conta empresarial'
             description={[
-              'Cria uma nova empresa e usuário. ',
-              'Usar códigos com letras e números para a empresa e usuário. ',
-              'Seu usuário é identificado por usuario@empresa.'
+              'Cria uma nova conta de empresa com usuário inicial. ',
+              'Usar códigos com letras e números para a empresa e o usuário. ',
+              'O usuário será identificado com o código codigo-usuario@codigo-empresa.'
             ]}
             type='info'
-            showIcon
           />
           <p />
           <Form onSubmit={this.validSubmit} colon={false} layout={'vertical'}>
@@ -109,7 +96,7 @@ class SignUp extends React.Component {
                 rules: [
                   {
                     required: true,
-                    message: 'Informe o codigo do cliente'
+                    message: 'Informe o codigo da empresa'
                   },
                   {
                     validator: this.verifyClient
@@ -131,7 +118,7 @@ class SignUp extends React.Component {
                 rules: [
                   {
                     required: true,
-                    message: 'Informe o nome da empresa responsável'
+                    message: 'Informe o nome da empresa'
                   }
                 ]
               })(
@@ -142,43 +129,50 @@ class SignUp extends React.Component {
               )}
             </Form.Item>
 
-            <Form.Item label='Código do usuário' >
-              {getFieldDecorator('usr', {
-                rules: [
-                  {
-                    required: true,
-                    message: 'Informe o codigo do usuário'
-                  },
-                  {
-                    validator: this.verifySlug
-                  }
-                ]
-              })(
-                <Input
-                  prefix={<Icon type='number' style={{ color: 'rgba(0,0,0,.25)' }} />}
-                  placeholder='Código da usuário' style={{ width: '30%' }}
-                />
-              )}
-            </Form.Item>
+            <Row type='flex' justify='space-between' align='middle'>
+              <Col span={11}>
 
-            <Form.Item label='E-Mail'>
-              {getFieldDecorator('email', {
-                rules: [
-                  {
-                    required: true,
-                    message: 'Informe seu e-mail'
-                  },
-                  {
-                    validator: this.verifyEmail
-                  }
-                ]
-              })(
-                <Input
-                  prefix={<Icon type='mail' style={{ color: 'rgba(0,0,0,.25)' }} />}
-                  placeholder='E-Mail do usuário'
-                />
-              )}
-            </Form.Item>
+                <Form.Item label='Código do usuário' >
+                  {getFieldDecorator('usr', {
+                    rules: [
+                      {
+                        required: true,
+                        message: 'Informe o codigo do usuário'
+                      },
+                      {
+                        validator: this.verifySlug
+                      }
+                    ]
+                  })(
+                    <Input
+                      prefix={<Icon type='number' style={{ color: 'rgba(0,0,0,.25)' }} />}
+                      placeholder='Código da usuário'
+                    />
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+
+                <Form.Item label='E-Mail'>
+                  {getFieldDecorator('email', {
+                    rules: [
+                      {
+                        required: true,
+                        message: 'Informe o e-mail do usuário'
+                      },
+                      {
+                        validator: this.verifyEmail
+                      }
+                    ]
+                  })(
+                    <Input
+                      prefix={<Icon type='mail' style={{ color: 'rgba(0,0,0,.25)' }} />}
+                      placeholder='E-Mail do usuário'
+                    />
+                  )}
+                </Form.Item>
+              </Col>
+            </Row>
             <Form.Item label='Nome do usuário'>
               {getFieldDecorator('name', {
                 rules: [

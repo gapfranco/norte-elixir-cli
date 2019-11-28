@@ -6,8 +6,9 @@ import queryString from 'query-string'
 
 import { signIn, signOut } from '~/src/services/authApi'
 import { findUser } from '~/src/services/userApi'
+import { errorAlert } from '~/src/services/utils'
 
-import { Form, Icon, Input, Button, Row, message, Card } from 'antd'
+import { Form, Icon, Input, Button, Row, Card } from 'antd'
 
 import { bindActionCreators } from 'redux'
 import { Creators as userActions } from '~/src/redux/ducks/user'
@@ -26,7 +27,7 @@ class SignIn extends React.Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const values = queryString.parse(this.props.location.search)
     this.setState({ codigo: values.uid })
   }
@@ -39,27 +40,17 @@ class SignIn extends React.Component {
     this.setState({ [prop]: event.target.value })
   }
 
-  handleSubmit = e => {
-    e.preventDefault()
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        console.log('Received values of form: ', values)
-      }
-    })
-  }
-
   validSubmit = e => {
     e.preventDefault()
     this.props.form.validateFields(async (err, values) => {
       if (!err) {
-        // console.log('Received values of form: ', values)
         this.setState({ isLoading: true })
         try {
           await signIn(values.uid, values.password)
           const user = await findUser(values.uid)
-          if (user.data.block) {
+          if (!user.data.active) {
             signOut()
-            message.error('Usuário bloqueado. Consulte administrador do sistema')
+            errorAlert('Usuário inativo', 'Consulte administrador do sistema', 5)
             this.setState({
               isLoading: false
             })
@@ -72,8 +63,8 @@ class SignIn extends React.Component {
           this.props.orderActions.setOrder(null)
           this.props.queryActions.setQuery(null)
           this.props.history.push('/')
-        } catch {
-          message.error('Erro de conexão. Verifique usuário e/ou senha')
+        } catch (err) {
+          errorAlert('Erro de conexão', 'Codigo e/ou senha inválidos', 5)
           this.setState({
             isLoading: false
           })
@@ -121,7 +112,7 @@ class SignIn extends React.Component {
                 <Input
                   prefix={<Icon type='lock' style={{ color: 'rgba(0,0,0,.25)' }} />}
                   type='password'
-                  placeholder='sENHA'
+                  placeholder='Senha'
                 />
               )}
             </Form.Item>
@@ -129,9 +120,9 @@ class SignIn extends React.Component {
               <Button type='primary' htmlType='submit' loading={this.state.isLoading}>
                 Conectar
               </Button>
-              <Button onClick={() => this.props.history.push('/signup')}>Criar nova conta</Button>
+              <Button onClick={() => this.props.history.push('/signup')}>Criar conta de empresa</Button>
               <Button onClick={() => this.props.history.push('/forgotpassword')} type='link'>
-                Esqueci a senha
+                Criar senha
               </Button>
             </Row>
           </Form>
@@ -142,8 +133,6 @@ class SignIn extends React.Component {
 }
 
 const mapStateToProps = () => ({})
-
-// const mapDispatchToProps = dispatch => bindActionCreators(authActions, dispatch)
 
 const mapDispatchToProps = dispatch => {
   return {

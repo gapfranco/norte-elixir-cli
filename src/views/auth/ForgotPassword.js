@@ -2,32 +2,32 @@ import React from 'react'
 
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Form, Icon, Input, Button, Row, message, Card } from 'antd'
+import { Form, Icon, Input, Button, Row, message, Card, Alert } from 'antd'
 
-import { passwordReset } from '~/src/services/authApi'
+import { resetPassword } from '~/src/services/authApi'
+import { errorAlert } from '~/src/services/utils'
 
 class ForgotPassword extends React.Component {
-  handleSubmit = e => {
-    e.preventDefault()
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        console.log('Received values of form: ', values)
-      }
-    })
-  }
+  state = { isLoading: false }
 
   validSubmit = e => {
     e.preventDefault()
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        passwordReset(values.uid)
+        this.setState({
+          isLoading: true
+        })
+        resetPassword(values.uid)
           .then(() => {
             message.info('Solicitação de código enviada')
             this.props.form.resetFields()
             this.props.history.push('/newpassword')
           })
           .catch(() => {
-            message.error('Verifique se o email é válido e a conexão')
+            errorAlert('Erro de conexão', 'Verifique se o código está correto', 5)
+            this.setState({
+              isLoading: false
+            })
           })
       }
     })
@@ -45,12 +45,11 @@ class ForgotPassword extends React.Component {
           <Alert
             message='Solicitar nova senha'
             description={[
-              'Entre com se código de usuário e clique em "Solicitar código" para receber um token ou código ',
-              'no seu e-mail. Na próxima tela, entre com o código recebido e altere sua senha. ',
+              'Entre com seu código de usuário e clique em "Solicitar". Vai receber um código ',
+              'por e-mail. Na próxima tela, entre com este código e altere a senha. ',
               'Se já tiver recebido o código, clique diretamente em "Criar senha"'
             ]}
             type='info'
-            showIcon
           />
           <p />
           <Form onSubmit={this.validSubmit} colon={false}>
@@ -71,8 +70,8 @@ class ForgotPassword extends React.Component {
             </Form.Item>
 
             <Row type='flex' justify='space-around' align='middle'>
-              <Button type='primary' htmlType='submit'>
-                Solicitar código
+              <Button type='primary' htmlType='submit' loading={this.state.isLoading}>
+                Solicitar
               </Button>
               <Button type='default' onClick={() => this.props.history.push('/newpassword')}>
                 Criar senha

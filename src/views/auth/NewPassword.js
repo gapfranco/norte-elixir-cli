@@ -3,31 +3,23 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
-import { Form, Icon, Input, Button, Row, message, Card } from 'antd'
-import { passwordConfirm } from '~/src/services/authApi'
+import { Form, Icon, Input, Button, Row, message, Card, Alert } from 'antd'
+import { newPassword } from '~/src/services/authApi'
+import { errorAlert } from '~/src/services/utils'
 
 class NewPassword extends React.Component {
-  handleSubmit = e => {
-    e.preventDefault()
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        console.log('Received values of form: ', values)
-      }
-    })
-  }
-
   validSubmit = e => {
     e.preventDefault()
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        passwordConfirm(values.token, values.new_password)
+        newPassword(values.token, values.new_password)
           .then(() => {
             message.info('Senha foi alterada com sucesso')
             this.props.form.resetFields()
             this.props.history.push('/')
           })
           .catch(() => {
-            message.error('Erro. Verifique se informou o código correto')
+            errorAlert('Erro', 'Verifique se o código está correto', 5)
           })
       }
     })
@@ -59,6 +51,15 @@ class NewPassword extends React.Component {
           className='card_data'
           style={{ width: 500, marginTop: '32px' }}
         >
+          <Alert
+            message='Criar uma nova senha'
+            description={[
+              'Entre com o código de ativação recebido por e-mail e crie uma nova senha. ',
+              'O código recebido tem validade de dois dias. Após este prazo terá de solicitar um novo código. '
+            ]}
+            type='info'
+          />
+          <p />
           <Form onSubmit={this.validSubmit} colon={false}>
             <Form.Item>
               {getFieldDecorator('token', {

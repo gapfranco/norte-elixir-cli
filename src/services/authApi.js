@@ -10,19 +10,19 @@ export function signIn (uid, password) {
   })
 }
 
-export function signUpUser(cid, clientname, usr, email, username, password) {
+export function signUpUser (cid, clientname, usr, email, username, password) {
   const body = { cid, clientname, usr, email, username, password }
   return axios.post(`${apiUrl}/signup`, body)
 }
 
-export function passwordReset (email) {
-  const body = { email }
+export function resetPassword (uid) {
+  const body = { uid }
   return axios.post(`${apiUrl}/password`, body)
 }
 
-export function passwordConfirm (token, password) {
+export function newPassword (token, password) {
   const body = { token, password }
-  return axios.post(`${apiUrl}/password`, body)
+  return axios.put(`${apiUrl}/password`, body)
 }
 
 export function changePassword (userId, oldPassword, newPassword) {
