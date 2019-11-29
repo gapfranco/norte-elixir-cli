@@ -15,6 +15,12 @@ export function signUpUser (cid, clientname, usr, email, username, password) {
   return axios.post(`${apiUrl}/signup`, body)
 }
 
+export function welcome (uid) {
+  const body = { uid }
+  console.log(body)
+  return axios.post(`${apiUrl}/welcome`, body)
+}
+
 export function resetPassword (uid) {
   const body = { uid }
   return axios.post(`${apiUrl}/password`, body)

@@ -2,16 +2,20 @@ import React from 'react'
 
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Form, Input, Button, Row, Col, message, Card, Popconfirm, Checkbox } from 'antd'
+import { Form, Input, Button, Row, message, Card, Popconfirm, Checkbox, Col } from 'antd'
 import BasePage from '~/src/components/BasePage'
 
 import { showUser, updateUser, createUser, deleteUser, isAdmin } from '~/src/services/userApi'
+import { welcome } from '~/src/services/authApi'
+import { validEmail } from '~/src/services/validators'
+import { errorAlert } from '~/src/services/utils'
 
 class EditUser extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
       loaded: false,
+      isLoading: false,
       user: null,
       open: false
     }
@@ -48,22 +52,24 @@ class EditUser extends React.Component {
     e.preventDefault()
     this.props.form.validateFields((err, values) => {
       if (!err) {
+        this.setState({ isLoading: true })
         if (!this.state.id) {
-          createUser(values)
-            .then(() => {
-              this.props.history.goBack()
+          createUser({ ...values, password: '#', password_confirmation: '#' })
+            .then(resp => {
+              welcome(resp.data.uid).then(() => this.props.history.goBack())
             })
             .catch(() => {
-              message.error('Erro na criação do usuário')
+              this.setState({ isLoading: false })
+              errorAlert('Erro', 'Erro na criação do usuário', 5)
             })
         } else {
           updateUser(this.state.id, values)
             .then(() => {
-              // this.props.form.resetFields()
               this.props.history.goBack()
             })
             .catch(() => {
-              message.error('Erro na atualização do usuário')
+              this.setState({ isLoading: false })
+              errorAlert('Erro', 'Erro na atualização do usuário', 5)
             })
         }
       }
@@ -85,18 +91,17 @@ class EditUser extends React.Component {
     }
   }
 
-  compareToFirstPassword = (rule, value, callback) => {
-    const form = this.props.form
-    if (value && value !== form.getFieldValue('password')) {
-      callback(new Error('Senhas inconsistentes'))
+  verifySlug = (rule, value, callback) => {
+    if (value && !this.state.id && !value.match(/^[a-z](-?[a-z0-9])*$/)) {
+      callback(new Error('Só deve conter letras minúsculas, numeros e travessão (-)'))
     } else {
       callback()
     }
   }
 
-  verifyPassword = (rule, value, callback) => {
-    if (value && value.length < 6) {
-      callback(new Error('Senha deve ter pelo menos 6 caracteres'))
+  verifyEmail = (rule, value, callback) => {
+    if (value && !validEmail(value)) {
+      callback(new Error('E-Mail inválido'))
     } else {
       callback()
     }
@@ -107,32 +112,10 @@ class EditUser extends React.Component {
     if (!this.state.loaded) {
       return null
     }
-    const formItemLayout = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 4 }
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 20 }
-      }
-    }
-    const tailFormItemLayout = {
-      wrapperCol: {
-        xs: {
-          span: 24,
-          offset: 0
-        },
-        sm: {
-          span: 20,
-          offset: 4
-        }
-      }
-    }
     let actions = []
     if (this.state.admin) {
       actions.push(
-        <Button type='primary' onClick={this.validSubmit}>
+        <Button type='primary' onClick={this.validSubmit} loading={this.state.isLoading}>
           Gravar
         </Button>
       )
@@ -151,8 +134,9 @@ class EditUser extends React.Component {
       }
     }
     actions.push(<Button onClick={() => this.props.history.goBack()}>Voltar</Button>)
+
     return (
-      <Row type='flex' justify='center' align='middle'>
+      <Row type='flex' justify='center' align='middle' >
         <Card
           title='Usuário'
           className='card_data'
@@ -160,120 +144,73 @@ class EditUser extends React.Component {
           actions={actions}
         >
           <Form
-            {...formItemLayout}
             onSubmit={this.validSubmit}
             colon={false}
-            className='change-form'
+            layout={'vertical'}
           >
-            <Form.Item label={'E-Mail'}>
-              <Row>
-                <Col span={12}>
+            <Row type='flex' justify='space-between' align='middle'>
+              <Col span={7}>
+                <Form.Item label={'Código'}>
+                  {getFieldDecorator('uid', {
+                    rules: [
+                      {
+                        required: true,
+                        message: 'Informe código do usuário (letras e números)'
+                      },
+                      {
+                        validator: this.verifySlug
+                      }
+                    ],
+                    initialValue: this.state.user.uid
+                  })(<Input placeholder='Código' disabled={!!this.state.id} />)}
+                </Form.Item>
+              </Col>
+              <Col span={16}>
+                <Form.Item label={'E-Mail'}>
                   {getFieldDecorator('email', {
                     rules: [
                       {
                         required: true,
-                        message: 'Informe o email'
+                        message: 'Informe o email do usuário'
                       }
                     ],
                     initialValue: this.state.user.email
                   })(<Input placeholder='E-Mail' disabled={!this.state.admin} />)}
-                </Col>
-              </Row>
-            </Form.Item>
+                </Form.Item>
+              </Col>
+            </Row>
             <Form.Item label={'Nome'}>
               {getFieldDecorator('name', {
                 rules: [
                   {
                     required: true,
-                    message: 'Informe o nome'
+                    message: 'Informe o nome do usuário'
                   }
                 ],
                 initialValue: this.state.user.name
               })(<Input placeholder='Nome' disabled={!this.state.admin} />)}
             </Form.Item>
 
-            {/* {!this.state.id ? (
-              <Form.Item label={'Senha'}>
-                {getFieldDecorator('password', {
-                  rules: [
-                    { required: true, message: 'Informe uma senha' },
-                    {
-                      validator: this.verifyPassword
-                    }
-                  ]
-                })(
-                  <Input.Password
-                    prefix={<Icon type='lock' style={{ color: 'rgba(0,0,0,.25)' }} />}
-                    style={{ width: 400 }}
-                    placeholder='Senha'
-                  />
-                )}
-              </Form.Item>
-            ) : null}
-
-            {!this.state.id ? (
-              <Form.Item label={'Confirma Senha'}>
-                {getFieldDecorator('password_confirmation', {
-                  rules: [
-                    { required: true, message: 'Confirme a senha' },
-                    {
-                      validator: this.compareToFirstPassword
-                    }
-                  ]
-                })(
-                  <Input.Password
-                    prefix={<Icon type='lock' style={{ color: 'rgba(0,0,0,.25)' }} />}
-                    type='password'
-                    style={{ width: 400 }}
-                    placeholder='Confirme a senha'
-                  />
-                )}
-              </Form.Item>
-            ) : null} */}
-
-            {this.state.id ? (
-              <Form.Item {...tailFormItemLayout}>
-                {getFieldDecorator('admin', {
-                  valuePropName: 'checked',
-                  initialValue: this.state.user.admin
-                })(
-                  <Checkbox disabled={!this.state.admin || this.state.id === this.props.user}>
+            <Form.Item>
+              {getFieldDecorator('admin', {
+                valuePropName: 'checked',
+                initialValue: this.state.user.admin
+              })(
+                <Checkbox disabled={!this.state.admin || this.state.id === this.props.user}>
                     Administrador
-                  </Checkbox>
-                )}
-              </Form.Item>
-            ) : null}
-            {this.state.id ? (
-              <Form.Item {...tailFormItemLayout}>
-                {getFieldDecorator('block', {
-                  valuePropName: 'checked',
-                  initialValue: this.state.user.block
-                })(
-                  <Checkbox disabled={!this.state.admin || this.state.id === this.props.user}>
-                    Usuário ativo
-                  </Checkbox>
-                )}
-              </Form.Item>
-            ) : null}
-            {/* <Row type='flex' justify='space-around' align='middle'>
-              {this.state.admin ? (
-                <Button type='primary' htmlType='submit'>
-                  Gravar
-                </Button>
-              ) : null}
-              {this.state.admin && this.state.id && this.state.id !== this.props.user ? (
-                <Popconfirm
-                  placement='top'
-                  title={'Confirme a exclusão'}
-                  onConfirm={this.submitDelete}
-                  okText='Sim'
-                  cancelText='Não'
-                >
-                  <Button type='danger'>Excluir</Button>
-                </Popconfirm>
-              ) : null}
-              <Button onClick={() => this.props.history.goBack()}>Voltar</Button>
-            </Row> */}
+                </Checkbox>
+              )}
+            </Form.Item>
+            <Form.Item>
+              {getFieldDecorator('block', {
+                valuePropName: 'checked',
+                initialValue: this.state.user.block
+              })(
+                <Checkbox disabled={!this.state.admin || this.state.id === this.props.user}>
+                    Bloqueado
+                </Checkbox>
+              )}
+            </Form.Item>
           </Form>
         </Card>
       </Row>

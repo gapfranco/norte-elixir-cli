@@ -3,23 +3,28 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
-import { Form, Icon, Input, Button, Row, Col, message, Card, Alert } from 'antd'
+import { Form, Icon, Input, Button, Row, Col, Card, Alert } from 'antd'
 import { clientFind } from '~/src/services/clientApi'
 import { signUpUser } from '~/src/services/authApi'
 import { validEmail } from '~/src/services/validators'
+import { errorAlert } from '~/src/services/utils'
 
 class SignUp extends React.Component {
+  state = { isLoading: false }
+
   validSubmit = e => {
     e.preventDefault()
     this.props.form.validateFields((err, values) => {
       if (!err) {
+        this.setState({ isLoading: true })
         signUpUser(values.codigo, values.empresa, values.usr, values.email, values.name, values.password)
           .then(() => {
             this.props.form.resetFields()
             this.props.history.push(`/signin?uid=${values.usr}@${values.codigo}`)
           })
-          .catch(err => {
-            message.error('Erro. Verifique se informou o código correto ' + err.message)
+          .catch(() => {
+            this.setState({ isLoading: false })
+            errorAlert('Erro', 'Verifique se informou o código correto')
           })
       }
     })
@@ -227,7 +232,7 @@ class SignUp extends React.Component {
               </Col>
             </Row>
             <Row type='flex' justify='space-between' align='middle'>
-              <Button type='primary' htmlType='submit'>
+              <Button type='primary' htmlType='submit' loading={this.state.isLoading}>
                 Confirmar
               </Button>
               <Button type='default' onClick={() => this.props.history.push('/signin')}>
