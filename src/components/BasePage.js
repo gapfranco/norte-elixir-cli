@@ -93,9 +93,9 @@ class BasePage extends React.Component {
                   <Icon type='team' />
                   Usuários
                 </Menu.Item>
-                <Menu.Item key='5' onClick={() => this.handleLink('/accounts')}>
+                <Menu.Item key='5' onClick={() => this.handleLink('/units')}>
                   <Icon type='folder-open' />
-                  Contas
+                  Unidades
                 </Menu.Item>
                 <Menu.Item
                   key='7'

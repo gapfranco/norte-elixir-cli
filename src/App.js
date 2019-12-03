@@ -13,6 +13,9 @@ import NewPassword from './views/auth/NewPassword'
 import ListUsers from './views/adm/ListUsers'
 import EditUser from './views/adm/EditUser'
 
+import ListUnits from './views/cad/ListUnits'
+import EditUnit from './views/cad/EditUnit'
+
 const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
@@ -38,6 +41,8 @@ class App extends Component {
         <PrivateRoute exact path='/changepassword' component={ChangePassword} />
         <PrivateRoute exact path='/users' component={ListUsers} />
         <PrivateRoute path='/user/:id' component={EditUser} />
+        <PrivateRoute exact path='/units' component={ListUnits} />
+        <PrivateRoute path='/unit/:id' component={EditUnit} />
       </div>
     )
   }
