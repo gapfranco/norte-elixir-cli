@@ -72,10 +72,7 @@ class BasePage extends React.Component {
                   <Icon type='api' />
                   Desconectar
                 </Menu.Item>
-                <Menu.Item
-                  key='3'
-                  onClick={() => this.handleLink('/changepassword')}
-                >
+                <Menu.Item key='3' onClick={() => this.handleLink('/changepassword')}>
                   <Icon type='safety' />
                   Alterar senha
                 </Menu.Item>
@@ -85,7 +82,7 @@ class BasePage extends React.Component {
                 title={
                   <span>
                     <Icon type='table' />
-                    <span>Cadastros</span>
+                    <span>Cadastro</span>
                   </span>
                 }
               >
@@ -94,19 +91,20 @@ class BasePage extends React.Component {
                   Usuários
                 </Menu.Item>
                 <Menu.Item key='5' onClick={() => this.handleLink('/units')}>
-                  <Icon type='folder-open' />
+                  <Icon type='bank' />
                   Unidades
                 </Menu.Item>
-                <Menu.Item
-                  key='7'
-                  onClick={() => this.handleLink('/indicators')}
-                >
-                  <Icon type='alert' />
-                  Indicadores
+                <Menu.Item key='7' onClick={() => this.handleLink('/areas')}>
+                  <Icon type='apartment' />
+                  Áreas
                 </Menu.Item>
-                <Menu.Item key='6' onClick={() => this.handleLink('/')}>
+                <Menu.Item key='6' onClick={() => this.handleLink('/processes')}>
                   <Icon type='share-alt' />
-                  Associação
+                  Processos
+                </Menu.Item>
+                <Menu.Item key='8' onClick={() => this.handleLink('/risks')}>
+                  <Icon type='thunderbolt' />
+                  Riscos
                 </Menu.Item>
               </SubMenu>
 
@@ -150,12 +148,6 @@ const styles = {
     color: 'orange'
   }
 }
-
-// const mapStateToProps = state => ({
-//   ...state
-// })
-
-// export default withRouter(connect(mapStateToProps)(BasePage))
 
 const mapStateToProps = state => {
   return {

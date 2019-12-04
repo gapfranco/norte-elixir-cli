@@ -15,6 +15,12 @@ import EditUser from './views/adm/EditUser'
 
 import ListUnits from './views/cad/ListUnits'
 import EditUnit from './views/cad/EditUnit'
+import ListAreas from './views/cad/ListAreas'
+import EditArea from './views/cad/EditArea'
+import ListProcesses from './views/cad/ListProcesses'
+import EditProcess from './views/cad/EditProcess'
+import ListRisks from './views/cad/ListRisks'
+import EditRisk from './views/cad/EditRisk'
 
 const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route
@@ -43,6 +49,12 @@ class App extends Component {
         <PrivateRoute path='/user/:id' component={EditUser} />
         <PrivateRoute exact path='/units' component={ListUnits} />
         <PrivateRoute path='/unit/:id' component={EditUnit} />
+        <PrivateRoute exact path='/areas' component={ListAreas} />
+        <PrivateRoute path='/area/:id' component={EditArea} />
+        <PrivateRoute exact path='/processes' component={ListProcesses} />
+        <PrivateRoute path='/process/:id' component={EditProcess} />
+        <PrivateRoute exact path='/risks' component={ListRisks} />
+        <PrivateRoute path='/risk/:id' component={EditRisk} />
       </div>
     )
   }
