@@ -66,7 +66,7 @@ class SignIn extends React.Component {
           this.props.queryActions.setQuery(null)
           this.props.history.push('/')
         } catch (err) {
-          errorAlert('Erro de conexão', 'Codigo e/ou senha inválidos', 5)
+          errorAlert('Erro de conexão', 'Codigo e/ou senha inválidos: ' + err, 5)
           this.setState({
             isLoading: false
           })

@@ -46,7 +46,7 @@ class ListUsers extends React.Component {
           {
             title: 'Name',
             width: 350,
-            dataIndex: 'name'
+            dataIndex: 'username'
           },
           {
             title: 'E-Mail',

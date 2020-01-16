@@ -30,15 +30,21 @@ export function showUser (id) {
 }
 
 export function findUser (uid) {
-  return axios.get(`${apiUrl}/users-find/${uid}`, getAuthHeader())
+  return axios.get(`${apiUrl}/users-uid/${uid}`, getAuthHeader())
 }
 
 export function updateUser (id, user) {
-  return axios.put(`${apiUrl}/users/${id}`, user, getAuthHeader())
+  const reg = {
+    user: user
+  }
+  return axios.put(`${apiUrl}/users/${id}`, reg, getAuthHeader())
 }
 
 export function createUser (user) {
-  return axios.post(`${apiUrl}/users`, user, getAuthHeader())
+  const reg = {
+    user: user
+  }
+  return axios.post(`${apiUrl}/users`, reg, getAuthHeader())
 }
 
 export function deleteUser (id) {
@@ -47,10 +53,10 @@ export function deleteUser (id) {
 
 export async function isAdmin (id) {
   const reg = await showUser(id)
-  return reg.data.admin
+  return reg.data.data.admin
 }
 
 export async function isBlocked (id) {
   const reg = await showUser(id)
-  return reg.data.block
+  return reg.data.data.block
 }

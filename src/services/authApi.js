@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken')
 export function signIn (uid, password) {
   const body = { uid, password }
   return axios.post(`${apiUrl}/signin`, body).then(res => {
-    localStorage.setItem('token', res.data.token)
+    localStorage.setItem('token', res.data.jwt)
   })
 }
 
@@ -71,7 +71,7 @@ export function getAuthHeader () {
 export function getUserId () {
   const token = localStorage.getItem('token')
   const decoded = jwt.decode(token)
-  return decoded.uid
+  return decoded.sub
 }
 
 export function getUserToken () {

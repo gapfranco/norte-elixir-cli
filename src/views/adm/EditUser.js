@@ -26,7 +26,7 @@ class EditUser extends React.Component {
     const admin = await isAdmin(this.props.user)
     if (id === '+') {
       this.setState({
-        user: { email: '', name: '', admin: false, block: false },
+        user: { email: '', username: '', admin: false, block: false },
         loaded: true,
         id: 0,
         admin
@@ -35,7 +35,7 @@ class EditUser extends React.Component {
       showUser(id)
         .then(res => {
           this.setState({
-            user: res.data,
+            user: res.data.data,
             loaded: true,
             id: parseInt(id, 10),
             admin
@@ -54,9 +54,10 @@ class EditUser extends React.Component {
       if (!err) {
         this.setState({ isLoading: true })
         if (!this.state.id) {
-          createUser({ ...values, password: '#', password_confirmation: '#' })
+          createUser({ ...values, password: '123456', password_confirmation: '123456' })
             .then(resp => {
-              welcome(resp.data.uid).then(() => this.props.history.goBack())
+              this.props.history.goBack()
+              // welcome(resp.data.uid).then(() => this.props.history.goBack())
             })
             .catch(() => {
               this.setState({ isLoading: false })
@@ -180,14 +181,14 @@ class EditUser extends React.Component {
               </Col>
             </Row>
             <Form.Item label={'Nome'}>
-              {getFieldDecorator('name', {
+              {getFieldDecorator('username', {
                 rules: [
                   {
                     required: true,
                     message: 'Informe o nome do usuário'
                   }
                 ],
-                initialValue: this.state.user.name
+                initialValue: this.state.user.username
               })(<Input placeholder='Nome' disabled={!this.state.admin} />)}
             </Form.Item>
 

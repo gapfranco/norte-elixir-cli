@@ -68,7 +68,7 @@ class ListGeneric extends React.Component {
       .list(page, size, qr, s)
       .then(res => {
         this.setState({
-          data: res.data.data,
+          data: res.data.list,
           lastPage: res.data.lastPage || 1,
           page: res.data.page || 1,
           perPage: res.data.perPage || size,
