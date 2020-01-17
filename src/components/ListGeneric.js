@@ -36,8 +36,7 @@ class ListGeneric extends React.Component {
       data: null,
       search: this.props.query ? this.props.query.v : '',
       field: this.props.query ? this.props.query.f : '',
-      order: this.props.order ? this.props.order : '',
-      oper: this.props.query ? this.props.query.q : '=',
+      oper: this.props.query ? this.props.query.c : 'eq',
       qry: this.props.qry,
       query: this.props.query,
       size: this.props.size || 10,
@@ -45,13 +44,12 @@ class ListGeneric extends React.Component {
       type,
       ro: this.props.ro || false,
       opr: [
-        { key: '=', name: 'Igual a' },
-        { key: '>', name: 'Maior que' },
-        { key: '>=', name: 'Maior ou igual a' },
-        { key: '<', name: 'Menor que' },
-        { key: '<=', name: 'Menor ou igual a' },
-        { key: 's', name: 'Inicia com' },
-        { key: 'c', name: 'Contém' }
+        { key: 'eq', name: 'Igual a' },
+        { key: 'gt', name: 'Maior que' },
+        { key: 'ge', name: 'Maior ou igual a' },
+        { key: 'lt', name: 'Menor que' },
+        { key: 'le', name: 'Menor ou igual a' },
+        { key: 'lk', name: 'Contém' }
       ]
     }
   }
@@ -59,7 +57,8 @@ class ListGeneric extends React.Component {
   componentDidMount () {
     const values = queryString.parse(this.props.location.search)
     const page = values.page ? parseInt(values.page, 10) : this.props.page || 1
-    this.makeRequest(page, this.props.size, this.props.query, this.props.order)
+    // console.log(this.props)
+    this.makeRequest(page, this.props.size, this.props.query)
   }
 
   makeRequest = (page, size, s = null) => {
@@ -72,7 +71,7 @@ class ListGeneric extends React.Component {
           lastPage: res.data.lastPage || 1,
           page: res.data.page || 1,
           perPage: res.data.perPage || size,
-          total: res.data.total ? parseInt(res.data.total, 10) : 0,
+          total: res.data.count ? parseInt(res.data.count, 10) : 0,
           loaded: true,
           style: { ...this.state.style, width: this.props.width || '100%' }
         })
@@ -109,17 +108,17 @@ class ListGeneric extends React.Component {
   startSearch = () => {
     if (this.state.field && this.state.search) {
       const qf = this.state.qry.find(e => e.key === this.state.field)
-      let q = this.state.oper
+      let c = this.state.oper
       let v = this.state.search
       if (qf && qf.type && (qf.type === 'number' || qf.type === 'date')) {
-        if (q === 's' || q === 'c') {
-          q = '='
+        if (c === 'lk') {
+          c = 'eq'
         }
         if (qf.type === 'number') {
           v = isNaN(v) ? 0 : v
         }
       }
-      let qr = { f: this.state.field, q, v }
+      let qr = { f: this.state.field, c, v }
       this.props.pageActions.setPage(null)
       this.props.queryActions.setQuery(qr)
       this.setState({ query: qr }, () => {
@@ -139,7 +138,7 @@ class ListGeneric extends React.Component {
     this.props.orderActions.setOrder(null)
     this.props.queryActions.setQuery(null)
     this.setState(
-      { field: '', oper: '=', search: '', order: '', type: 'text', query: null },
+      { field: '', oper: 'eq', search: '', order: '', type: 'text', query: null },
       () => {
         this.makeRequest(1, this.props.size)
       }
@@ -168,11 +167,12 @@ class ListGeneric extends React.Component {
 
   render () {
     const pagina = {
-      pageSize: this.state.size,
+      pageSize: this.props.size,
       current: this.state.page,
       total: this.state.total,
       onChange: this.onChangePage
     }
+    // console.log(pagina)
     const dateFormat = 'YYYY-MM-DD'
     return (
       <Row type='flex' justify='center' align='middle'>

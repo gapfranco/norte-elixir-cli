@@ -133,7 +133,7 @@ class BasePage extends React.Component {
               {this.state.component}
             </Content>
             <Footer style={{ textAlign: 'center' }}>
-              M2I Consultoria ©2019
+              M2I Consultoria ©2020
             </Footer>
           </Layout>
         </Layout>

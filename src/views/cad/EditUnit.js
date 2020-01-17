@@ -23,7 +23,7 @@ class EditUnit extends React.Component {
     const id = this.props.match.params.id
     if (id === '+') {
       this.setState({
-        data: { id: '', name: '' },
+        data: { key: '', name: '' },
         loaded: true,
         id: 0
       })
@@ -31,7 +31,7 @@ class EditUnit extends React.Component {
       showUnit(id)
         .then(res => {
           this.setState({
-            data: res.data,
+            data: res.data.data,
             loaded: true,
             id
           })
@@ -85,7 +85,7 @@ class EditUnit extends React.Component {
   }
 
   verifyId = (rule, value, callback) => {
-    if (value && !this.state.id && !value.match(/^[a-z0-9](\.?[a-z0-9])*$/)) {
+    if (value && !this.state.key && !value.match(/^[a-z0-9](\.?[a-z0-9])*$/)) {
       callback(new Error('Só deve conter letras minúsculas, numeros e pontos (.)'))
     } else {
       callback()
@@ -132,7 +132,7 @@ class EditUnit extends React.Component {
             layout={'vertical'}
           >
             <Form.Item label={'Código'}>
-              {getFieldDecorator('id', {
+              {getFieldDecorator('key', {
                 rules: [
                   {
                     required: true,
@@ -142,7 +142,7 @@ class EditUnit extends React.Component {
                     validator: this.verifyId
                   }
                 ],
-                initialValue: this.state.data.id
+                initialValue: this.state.data.key
               })(<Input placeholder='Código' style={{ width: '50%' }}disabled={!!this.state.id} />)}
             </Form.Item>
             <Form.Item label={'Nome'}>

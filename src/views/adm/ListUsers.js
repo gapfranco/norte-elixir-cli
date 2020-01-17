@@ -35,7 +35,7 @@ class ListUsers extends React.Component {
         qry={[
           { key: 'uid', name: 'ID', type: 'text' },
           { key: 'email', name: 'E-Mail', type: 'text' },
-          { key: 'name', name: 'Nome', type: 'text' }
+          { key: 'username', name: 'Nome', type: 'text' }
         ]}
         table={[
           {
