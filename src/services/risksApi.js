@@ -10,7 +10,7 @@ export function listRisks (page = 0, size = 0, query = null) {
     c = '&'
   }
   if (query) {
-    q += `${c}f=${query.f}&c=${query.q}&v=${query.v}`
+    q += `${c}f=${query.f}&c=${query.c}&v=${query.v}`
     c = '&'
   }
   if (size) {
