@@ -30,14 +30,14 @@ class ListRisks extends React.Component {
         width={'100%'}
         ro={this.state.ro}
         qry={[
-          { key: 'id', name: 'Código', type: 'text' },
+          { key: 'key', name: 'Código', type: 'text' },
           { key: 'name', name: 'Nome', type: 'text' }
         ]}
         table={[
           {
             title: 'Código',
             width: 180,
-            dataIndex: 'id'
+            dataIndex: 'key'
           },
           {
             title: 'Nome',

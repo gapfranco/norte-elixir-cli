@@ -23,7 +23,7 @@ class EditRisk extends React.Component {
     const id = this.props.match.params.id
     if (id === '+') {
       this.setState({
-        data: { id: '', name: '' },
+        data: { key: '', name: '' },
         loaded: true,
         id: 0
       })
@@ -31,7 +31,7 @@ class EditRisk extends React.Component {
       showRisk(id)
         .then(res => {
           this.setState({
-            data: res.data,
+            data: res.data.data,
             loaded: true,
             id
           })
@@ -132,7 +132,7 @@ class EditRisk extends React.Component {
             layout={'vertical'}
           >
             <Form.Item label={'Código'}>
-              {getFieldDecorator('id', {
+              {getFieldDecorator('key', {
                 rules: [
                   {
                     required: true,
@@ -142,7 +142,7 @@ class EditRisk extends React.Component {
                     validator: this.verifyId
                   }
                 ],
-                initialValue: this.state.data.id
+                initialValue: this.state.data.key
               })(<Input placeholder='Código' style={{ width: '50%' }}disabled={!!this.state.id} />)}
             </Form.Item>
             <Form.Item label={'Nome'}>
