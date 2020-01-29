@@ -4,8 +4,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import queryString from 'query-string'
 
-import { signIn, signOut } from '~/src/services/authApi'
-import { findUser } from '~/src/services/userApi'
+import { signIn } from '~/src/services/authApi'
 import { errorAlert } from '~/src/services/utils'
 
 import { Form, Icon, Input, Button, Row, Card } from 'antd'
@@ -49,15 +48,6 @@ class SignIn extends React.Component {
         this.setState({ isLoading: true })
         try {
           await signIn(values.uid, values.password)
-          const user = await findUser(values.uid)
-          if (user.data.block) {
-            signOut()
-            errorAlert('Usuário inativo', 'Consulte administrador do sistema', 5)
-            this.setState({
-              isLoading: false
-            })
-            return
-          }
           this.setState({ isLoading: false })
           // reset redux page states
           this.props.userActions.setSessionRequest()

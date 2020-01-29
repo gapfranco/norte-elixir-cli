@@ -4,15 +4,39 @@ import { apiUrl } from '~/src/config/apiConfig'
 const jwt = require('jsonwebtoken')
 
 export function signIn (uid, password) {
-  const body = { uid, password }
-  return axios.post(`${apiUrl}/signin`, body).then(res => {
-    localStorage.setItem('token', res.data.jwt)
+  const gql = `
+  mutation {
+    signin(input: {uid: "${uid}" , password: "${password}"}) { 
+      token 
+    }
+  }`
+  const body = { query: gql }
+  return axios.post(`${apiUrl}`, body).then(({ data }) => {
+    if (data.data.signin) {
+      localStorage.setItem('token', data.data.signin.token)
+    } else {
+      throw (data.errors[0].message)
+    }
   })
 }
 
 export function signUpUser (cid, clientname, usr, email, username, password) {
-  const body = { cid, clientname, usr, email, username, password, password_confirmation: password }
-  return axios.post(`${apiUrl}/signup`, body)
+  const gql = `
+  mutation {
+    signup(input: {cid: "${cid}", name: "${clientname}", uid: "${usr}@${cid}", email: "${email}", 
+    username: "${username}", password: "${password}", password_confirmation: "${password}"}) { 
+      cid
+      name 
+    }
+  }`
+  const body = {
+    query: gql
+  }
+  return axios.post(`${apiUrl}`, body).then(({ data }) => {
+    if (data.errors) {
+      throw data.errors[0].message
+    }
+  })
 }
 
 export function welcome (uid) {
@@ -22,13 +46,34 @@ export function welcome (uid) {
 }
 
 export function resetPassword (uid) {
-  const body = { uid }
-  return axios.post(`${apiUrl}/password`, body)
+  const gql = `
+  mutation {
+    forgotPassword(uid: "${uid}") { 
+      msg
+    }
+  }`
+  const body = {
+    query: gql
+  }
+  return axios.post(`${apiUrl}`, body)
 }
 
-export function newPassword (token, password) {
-  const body = { token, password }
-  return axios.put(`${apiUrl}/password`, body)
+export function newPassword (uid, token, password, passwordConfirmation) {
+  const gql = `
+  mutation {
+    createPassword(input: {uid: "${uid}", token: "${token}",  
+    password: "${password}", password_confirmation: "${passwordConfirmation}"}) { 
+      msg
+    }
+  }`
+  const body = {
+    query: gql
+  }
+  return axios.post(`${apiUrl}`, body).then(({ data }) => {
+    if (data.errors) {
+      throw data.errors[0].message
+    }
+  })
 }
 
 export function changePassword (oldPassword, newPassword) {

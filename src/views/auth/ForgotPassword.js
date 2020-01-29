@@ -40,7 +40,7 @@ class ForgotPassword extends React.Component {
         <Card
           title='Solicitar código para criar senha'
           className='card_data'
-          style={{ width: 500, marginTop: '32px' }}
+          style={{ width: 600, marginTop: '32px' }}
         >
           <Alert
             message='Solicitar nova senha'

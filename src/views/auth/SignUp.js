@@ -68,7 +68,7 @@ class SignUp extends React.Component {
     if (value) {
       ex = await clientFind(value)
     }
-    if (ex.data) {
+    if (ex.data.data.client) {
       callback(new Error('Já existe cliente com este código'))
     } else {
       callback()

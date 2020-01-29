@@ -12,14 +12,19 @@ class NewPassword extends React.Component {
     e.preventDefault()
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        newPassword(values.token, values.new_password)
+        newPassword(
+          values.uid,
+          values.token,
+          values.new_password,
+          values.confirm_password
+        )
           .then(() => {
             message.info('Senha foi alterada com sucesso')
             this.props.form.resetFields()
             this.props.history.push('/')
           })
-          .catch(() => {
-            errorAlert('Erro', 'Verifique se o código está correto', 5)
+          .catch((err) => {
+            errorAlert('Erro', 'Verifique se o código está correto: ' + err, 5)
           })
       }
     })
@@ -49,7 +54,7 @@ class NewPassword extends React.Component {
         <Card
           title='Criar nova senha'
           className='card_data'
-          style={{ width: 500, marginTop: '32px' }}
+          style={{ width: 600, marginTop: '32px' }}
         >
           <Alert
             message='Criar uma nova senha'
@@ -62,6 +67,23 @@ class NewPassword extends React.Component {
           <p />
           <Form onSubmit={this.validSubmit} colon={false}>
             <Form.Item>
+              {getFieldDecorator('uid', {
+                rules: [
+                  {
+                    required: true,
+                    message: 'Informe o código do usuário'
+                  }
+                ]
+              })(
+                <Input
+                  prefix={
+                    <Icon type='check' style={{ color: 'rgba(0,0,0,.25)' }} />
+                  }
+                  placeholder='Código de usuário'
+                />
+              )}
+            </Form.Item>
+            <Form.Item>
               {getFieldDecorator('token', {
                 rules: [
                   {
@@ -71,7 +93,9 @@ class NewPassword extends React.Component {
                 ]
               })(
                 <Input
-                  prefix={<Icon type='number' style={{ color: 'rgba(0,0,0,.25)' }} />}
+                  prefix={
+                    <Icon type='check' style={{ color: 'rgba(0,0,0,.25)' }} />
+                  }
                   placeholder='Código recebido'
                 />
               )}
@@ -86,7 +110,9 @@ class NewPassword extends React.Component {
                 ]
               })(
                 <Input.Password
-                  prefix={<Icon type='lock' style={{ color: 'rgba(0,0,0,.25)' }} />}
+                  prefix={
+                    <Icon type='lock' style={{ color: 'rgba(0,0,0,.25)' }} />
+                  }
                   placeholder='Nova senha'
                 />
               )}
@@ -101,7 +127,9 @@ class NewPassword extends React.Component {
                 ]
               })(
                 <Input.Password
-                  prefix={<Icon type='lock' style={{ color: 'rgba(0,0,0,.25)' }} />}
+                  prefix={
+                    <Icon type='lock' style={{ color: 'rgba(0,0,0,.25)' }} />
+                  }
                   type='password'
                   placeholder='Confirme a senha'
                 />
@@ -112,7 +140,10 @@ class NewPassword extends React.Component {
               <Button type='primary' htmlType='submit'>
                 Confirmar
               </Button>
-              <Button type='default' onClick={() => this.props.history.push('/forgotpassword')}>
+              <Button
+                type='default'
+                onClick={() => this.props.history.push('/forgotpassword')}
+              >
                 Solicitar novo código
               </Button>
             </Row>
