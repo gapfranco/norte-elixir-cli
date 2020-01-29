@@ -24,14 +24,14 @@ class ChangePassword extends React.Component {
     e.preventDefault()
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        changePassword(values.current_password, values.new_password)
+        changePassword(values.current_password, values.new_password, values.confirm_password)
           .then(() => {
             message.info('Senha foi alterada com sucesso')
             this.props.form.resetFields()
             this.props.history.push('/')
           })
-          .catch(() => {
-            errorAlert('Usuário', 'Verifique se errou a senha atual', 5)
+          .catch((err) => {
+            errorAlert('Usuário', 'Verifique se errou a senha atual: ' + err, 5)
           })
       }
     })

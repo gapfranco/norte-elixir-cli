@@ -76,9 +76,21 @@ export function newPassword (uid, token, password, passwordConfirmation) {
   })
 }
 
-export function changePassword (oldPassword, newPassword) {
-  const body = { oldPassword, newPassword }
-  return axios.post(`${apiUrl}/password-change`, body, getAuthHeader())
+export function changePassword (oldPassword, password, confirmPassword) {
+  const gql = `
+  mutation {
+    changePassword(oldPassword: "${oldPassword}", password: "${password}", passwordConfirmation: "${confirmPassword}") { 
+      msg
+    }
+  }`
+  const body = {
+    query: gql
+  }
+  return axios.post(`${apiUrl}`, body, getAuthHeader()).then(({ data }) => {
+    if (data.errors) {
+      throw data.errors[0].message
+    }
+  })
 }
 
 export function signOut () {
