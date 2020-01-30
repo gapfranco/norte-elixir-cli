@@ -1,23 +1,28 @@
 import axios from 'axios'
 import { apiUrl } from '~/src/config/apiConfig'
-import { getAuthHeader } from './authApi'
+import { getAuthHeader, me } from './authApi'
 
-export function listUser (page = 0, size = 0, query = null) {
-  let q = ''
-  let c = '?'
-  if (page) {
-    q = `${c}p=${page}`
-    c = '&'
+export function listUser (page = 1, limit = 10, filter = null) {
+  const q = filter ? `, filter: {matching: "${filter}"}` : ''
+
+  const gql = `
+  query {
+    users(page: ${page}, limit: ${limit} ${q} ) {
+      count hasNext hasPrev nextPage prevPage page
+      list {
+        uid
+        username
+        admin
+        block
+        email
+      }
+    }
   }
-  if (query) {
-    q += `${c}f=${query.f}&c=${query.c}&v=${query.v}`
-    c = '&'
+  `
+  const body = {
+    query: gql
   }
-  if (size) {
-    q += `${c}s=${size}`
-    c = '&'
-  }
-  return axios.get(`${apiUrl}/users/${q}`, getAuthHeader())
+  return axios.post(`${apiUrl}`, body, getAuthHeader())
 }
 
 export function showUser (id) {
@@ -46,9 +51,9 @@ export function deleteUser (id) {
   return axios.delete(`${apiUrl}/users/${id}`, getAuthHeader())
 }
 
-export async function isAdmin (id) {
-  const reg = await showUser(id)
-  return reg.data.data.admin
+export async function isAdmin () {
+  const reg = await me()
+  return reg.data.data.me.admin
 }
 
 export async function isBlocked (id) {

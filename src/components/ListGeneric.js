@@ -10,10 +10,7 @@ import {
   Row,
   Card,
   Table,
-  Select,
-  Tooltip,
-  DatePicker,
-  InputNumber
+  Tooltip
 } from 'antd'
 import queryString from 'query-string'
 
@@ -22,56 +19,40 @@ import { bindActionCreators } from 'redux'
 import { Creators as pageActions } from '~/src/redux/ducks/page'
 import { Creators as orderActions } from '~/src/redux/ducks/order'
 import { Creators as queryActions } from '~/src/redux/ducks/query'
-const moment = require('moment')
 
 class ListGeneric extends React.Component {
   constructor (props) {
     super(props)
-    const f = this.props.query ? this.props.query.f : ''
-    const qf = this.props.qry.find(e => e.key === f)
-    const type = qf ? qf.type || 'text' : 'text'
     this.state = {
       error: null,
       loaded: false,
       data: null,
       search: this.props.query ? this.props.query.v : '',
-      field: this.props.query ? this.props.query.f : '',
-      oper: this.props.query ? this.props.query.c : 'eq',
-      qry: this.props.qry,
       query: this.props.query,
       size: this.props.size || 10,
       style: { width: '100%', marginTop: '32px' },
-      type,
-      ro: this.props.ro || false,
-      opr: [
-        { key: 'eq', name: 'Igual a' },
-        { key: 'gt', name: 'Maior que' },
-        { key: 'ge', name: 'Maior ou igual a' },
-        { key: 'lt', name: 'Menor que' },
-        { key: 'le', name: 'Menor ou igual a' },
-        { key: 'lk', name: 'Contém' }
-      ]
+      ro: this.props.ro || false
     }
   }
 
   componentDidMount () {
     const values = queryString.parse(this.props.location.search)
     const page = values.page ? parseInt(values.page, 10) : this.props.page || 1
-    // console.log(this.props)
     this.makeRequest(page, this.props.size, this.props.query)
   }
 
-  makeRequest = (page, size, s = null) => {
+  makeRequest = (page, size) => {
     const qr = this.state.query
     this.props
-      .list(page, size, qr, s)
+      .list(page, size, qr)
       .then(res => {
+        const data = res.data.data.users
         this.setState({
-          data: res.data.list,
-          lastPage: res.data.lastPage || 1,
-          page: res.data.page || 1,
-          perPage: res.data.perPage || size,
-          total: res.data.count ? parseInt(res.data.count, 10) : 0,
+          data: data.list,
+          lastPage: data.lastPage || 1,
+          page: data.page || 1,
+          perPage: data.perPage || size,
+          total: data.count ? parseInt(data.count, 10) : 0,
           loaded: true,
           style: { ...this.state.style, width: this.props.width || '100%' }
         })
@@ -81,47 +62,15 @@ class ListGeneric extends React.Component {
       })
   }
 
-  handleField = value => {
-    this.setState({ field: value, search: '' })
-    const qf = this.state.qry.find(e => e.key === value)
-    const type = qf ? qf.type || 'text' : 'text'
-    this.setState({ type })
-  }
-
-  handleOper = value => {
-    this.setState({ oper: value })
-  }
-
   handleSearch = event => {
-    // console.log(event)
     this.setState({ search: event.target.value })
   }
 
-  handleSearchNumber = value => {
-    this.setState({ search: value })
-  }
-
-  handleSearchDate = value => {
-    this.setState({ search: value.format() })
-  }
-
   startSearch = () => {
-    if (this.state.field && this.state.search) {
-      const qf = this.state.qry.find(e => e.key === this.state.field)
-      let c = this.state.oper
-      let v = this.state.search
-      if (qf && qf.type && (qf.type === 'number' || qf.type === 'date')) {
-        if (c === 'lk') {
-          c = 'eq'
-        }
-        if (qf.type === 'number') {
-          v = isNaN(v) ? 0 : v
-        }
-      }
-      let qr = { f: this.state.field, c, v }
+    if (this.state.search) {
       this.props.pageActions.setPage(null)
-      this.props.queryActions.setQuery(qr)
-      this.setState({ query: qr }, () => {
+      this.props.queryActions.setQuery(this.state.search)
+      this.setState({ query: this.state.search }, () => {
         this.makeRequest(1, this.props.size)
       })
     } else {
@@ -137,8 +86,7 @@ class ListGeneric extends React.Component {
     this.props.pageActions.setPage(null)
     this.props.orderActions.setOrder(null)
     this.props.queryActions.setQuery(null)
-    this.setState(
-      { field: '', oper: 'eq', search: '', order: '', type: 'text', query: null },
+    this.setState({ query: null, search: '' },
       () => {
         this.makeRequest(1, this.props.size)
       }
@@ -172,69 +120,21 @@ class ListGeneric extends React.Component {
       total: this.state.total,
       onChange: this.onChangePage
     }
-    // console.log(pagina)
-    const dateFormat = 'YYYY-MM-DD'
     return (
       <Row type='flex' justify='center' align='middle'>
         <Card title={this.props.title} className='card_data' style={this.state.style}>
           <div style={{ paddingBottom: '8px' }}>
             <Form layout='inline'>
               <Form.Item>
-                <Tooltip placement='top' title={'Campo a pesquisar'}>
-                  <Select
-                    value={this.state.field}
-                    onChange={this.handleField}
-                    style={{ width: 160 }}
-                  >
-                    <Select.Option value={''}>Buscar</Select.Option>
-                    {this.state.qry.map(item => (
-                      <Select.Option key={item.key} value={item.key}>
-                        {item.name}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </Tooltip>
-              </Form.Item>
-              <Form.Item>
-                <Tooltip placement='top' title={'Tipo de comparação'}>
-                  <Select value={this.state.oper} onChange={this.handleOper} style={{ width: 150 }}>
-                    {this.state.opr.map(item => (
-                      <Select.Option key={item.key} value={item.key}>
-                        {item.name}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </Tooltip>
-              </Form.Item>
-              <Form.Item>
                 <Tooltip placement='top' title={'Valor a buscar'}>
-                  {this.state.type === 'date' ? (
-                    <DatePicker
-                      value={this.state.search ? moment(this.state.search, dateFormat) : null}
-                      format={dateFormat}
-                      placeholder='Data a buscar'
-                      onChange={this.handleSearchDate}
-                    />
-                  ) : null}
-                  {this.state.type === 'number' ? (
-                    <InputNumber
-                      style={{ width: 320 }}
-                      value={this.state.search}
-                      placeholder='Valor a buscar'
-                      onChange={this.handleSearchNumber}
-                    />
-                  ) : null}
-                  {this.state.type === 'text' ? (
-                    <Input
-                      style={{ width: 320 }}
-                      value={this.state.search}
-                      type={this.state.type}
-                      prefix={<Icon type='search' style={{ color: 'rgba(0,0,0,.25)' }} />}
-                      placeholder='Valor a buscar'
-                      allowClear
-                      onChange={this.handleSearch}
-                    />
-                  ) : null}
+                  <Input
+                    style={{ width: 400 }}
+                    value={this.state.search}
+                    prefix={<Icon type='search' style={{ color: 'rgba(0,0,0,.25)' }} />}
+                    placeholder='Valor a buscar'
+                    allowClear
+                    onChange={this.handleSearch}
+                  />
                 </Tooltip>
               </Form.Item>
               <Form.Item>

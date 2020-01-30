@@ -32,11 +32,6 @@ class ListUsers extends React.Component {
         size={10}
         width={'100%'}
         ro={this.state.ro}
-        qry={[
-          { key: 'uid', name: 'ID', type: 'text' },
-          { key: 'email', name: 'E-Mail', type: 'text' },
-          { key: 'username', name: 'Nome', type: 'text' }
-        ]}
         table={[
           {
             title: 'Id',

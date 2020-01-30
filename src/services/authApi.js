@@ -93,6 +93,14 @@ export function changePassword (oldPassword, password, confirmPassword) {
   })
 }
 
+export function me () {
+  const gql = '{ me { uid username email admin }}'
+  const body = {
+    query: gql
+  }
+  return axios.post(`${apiUrl}`, body, getAuthHeader())
+}
+
 export function signOut () {
   localStorage.removeItem('token')
 }

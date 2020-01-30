@@ -6,7 +6,7 @@ import { Form, Input, Button, Row, message, Card, Popconfirm, Checkbox, Col } fr
 import BasePage from '~/src/components/BasePage'
 
 import { showUser, updateUser, createUser, deleteUser, isAdmin } from '~/src/services/userApi'
-import { welcome } from '~/src/services/authApi'
+// import { welcome } from '~/src/services/authApi'
 import { validEmail } from '~/src/services/validators'
 import { errorAlert } from '~/src/services/utils'
 
