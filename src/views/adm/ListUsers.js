@@ -28,6 +28,7 @@ class ListUsers extends React.Component {
       <ListGeneric
         title='Usuários'
         detail='/user'
+        id='uid'
         list={listUser}
         size={10}
         width={'100%'}

@@ -68,13 +68,21 @@ class BasePage extends React.Component {
                   </span>
                 }
               >
-                <Menu.Item key='2' onClick={this.handleDisconnect}>
-                  <Icon type='api' />
-                  Desconectar
+                {/* <Menu.Item key='2' onClick={this.handleDisconnect}> */}
+                <Menu.Item key='4' onClick={() => this.handleLink('/account')}>
+                  <Icon type='info-circle' />
+                  Informações
                 </Menu.Item>
-                <Menu.Item key='3' onClick={() => this.handleLink('/changepassword')}>
+                <Menu.Item
+                  key='3'
+                  onClick={() => this.handleLink('/changepassword')}
+                >
                   <Icon type='safety' />
                   Alterar senha
+                </Menu.Item>
+                <Menu.Item key='31' onClick={this.handleDisconnect}>
+                  <Icon type='disconnect' />
+                  Desconectar
                 </Menu.Item>
               </SubMenu>
               <SubMenu
@@ -98,7 +106,10 @@ class BasePage extends React.Component {
                   <Icon type='apartment' />
                   Áreas
                 </Menu.Item>
-                <Menu.Item key='6' onClick={() => this.handleLink('/processes')}>
+                <Menu.Item
+                  key='6'
+                  onClick={() => this.handleLink('/processes')}
+                >
                   <Icon type='share-alt' />
                   Processos
                 </Menu.Item>

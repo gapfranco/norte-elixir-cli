@@ -161,14 +161,14 @@ class ListGeneric extends React.Component {
           <Table
             columns={this.props.table}
             dataSource={this.state.data}
-            rowKey={record => record.id}
+            rowKey={record => record[this.props.id]}
             size='middle'
             bordered
             pagination={pagina}
             onRow={record => {
               return {
                 onClick: () => {
-                  this.handleClick(record.id)
+                  this.handleClick(record[this.props.id])
                 }
               }
             }}

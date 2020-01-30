@@ -10,6 +10,7 @@ import SignUp from './views/auth/SignUp'
 import ChangePassword from './views/auth/ChangePassword'
 import ForgotPassword from './views/auth/ForgotPassword'
 import NewPassword from './views/auth/NewPassword'
+import Account from './views/auth/Account'
 import ListUsers from './views/adm/ListUsers'
 import EditUser from './views/adm/EditUser'
 
@@ -44,6 +45,7 @@ class App extends Component {
         <Route exact path='/signup' component={SignUp} />
         <Route exact path='/forgotpassword' component={ForgotPassword} />
         <Route exact path='/newpassword' component={NewPassword} />
+        <PrivateRoute exact path='/account' component={Account} />
         <PrivateRoute exact path='/changepassword' component={ChangePassword} />
         <PrivateRoute exact path='/users' component={ListUsers} />
         <PrivateRoute path='/user/:id' component={EditUser} />

@@ -28,16 +28,16 @@ class EditUser extends React.Component {
       this.setState({
         user: { email: '', username: '', admin: false, block: false },
         loaded: true,
-        id: 0,
+        id: id,
         admin
       })
     } else {
       showUser(id)
         .then(res => {
           this.setState({
-            user: res.data.data,
+            user: res.data.data.user,
             loaded: true,
-            id: parseInt(id, 10),
+            id: id,
             admin
           })
         })
@@ -53,24 +53,24 @@ class EditUser extends React.Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         this.setState({ isLoading: true })
-        if (!this.state.id) {
-          createUser({ ...values, password: '123456', password_confirmation: '123456' })
-            .then(resp => {
-              this.props.history.goBack()
-              // welcome(resp.data.uid).then(() => this.props.history.goBack())
-            })
-            .catch(() => {
-              this.setState({ isLoading: false })
-              errorAlert('Erro', 'Erro na criação do usuário', 5)
-            })
-        } else {
-          updateUser(this.state.id, values)
+        if (this.props.match.params.id === '+') {
+          createUser(values)
             .then(() => {
               this.props.history.goBack()
             })
-            .catch(() => {
+            .catch((err) => {
               this.setState({ isLoading: false })
-              errorAlert('Erro', 'Erro na atualização do usuário', 5)
+              errorAlert('Erro', 'Erro na criação do usuário: ' + err, 5)
+            })
+        } else {
+          console.log(values)
+          updateUser(values)
+            .then(() => {
+              this.props.history.goBack()
+            })
+            .catch((err) => {
+              this.setState({ isLoading: false })
+              errorAlert('Erro', 'Erro na atualização do usuário: ' + err, 5)
             })
         }
       }
@@ -78,10 +78,10 @@ class EditUser extends React.Component {
   }
 
   submitDelete = () => {
-    if (this.props.user.id === this.state.user.id) {
+    if (this.props.user === this.state.user.id) {
       message.error('Usuário não pode excluir a si mesmo')
     } else {
-      deleteUser(this.state.user.id)
+      deleteUser(this.state.user.uid)
         .then(() => {
           message.error('Registro excluido')
           this.props.history.goBack()
@@ -93,7 +93,7 @@ class EditUser extends React.Component {
   }
 
   verifySlug = (rule, value, callback) => {
-    if (value && !this.state.id && !value.match(/^[a-z](-?[a-z0-9])*$/)) {
+    if (value && this.props.match.params.id === '+' && !value.match(/^[a-z](-?[a-z0-9])*$/)) {
       callback(new Error('Só deve conter letras minúsculas, numeros e travessão (-)'))
     } else {
       callback()
@@ -113,6 +113,7 @@ class EditUser extends React.Component {
     if (!this.state.loaded) {
       return null
     }
+    console.log(this.state, this.props.user)
     let actions = []
     if (this.state.admin) {
       actions.push(
@@ -120,7 +121,8 @@ class EditUser extends React.Component {
           Gravar
         </Button>
       )
-      if (this.state.id && this.state.id !== this.props.user) {
+
+      if (this.state.id !== '+' && this.state.user.id !== this.props.user) {
         actions.push(
           <Popconfirm
             placement='top'
@@ -197,7 +199,7 @@ class EditUser extends React.Component {
                 valuePropName: 'checked',
                 initialValue: this.state.user.admin
               })(
-                <Checkbox disabled={!this.state.admin || this.state.id === this.props.user}>
+                <Checkbox disabled={!this.state.admin || this.state.user.id === this.props.user}>
                     Administrador
                 </Checkbox>
               )}
@@ -207,7 +209,7 @@ class EditUser extends React.Component {
                 valuePropName: 'checked',
                 initialValue: this.state.user.block
               })(
-                <Checkbox disabled={!this.state.admin || this.state.id === this.props.user}>
+                <Checkbox disabled={!this.state.admin || this.state.user.id === this.props.user}>
                     Bloqueado
                 </Checkbox>
               )}
