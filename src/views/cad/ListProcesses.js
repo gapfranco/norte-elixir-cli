@@ -25,14 +25,12 @@ class ListProcesses extends React.Component {
       <ListGeneric
         title='Processos'
         detail='/process'
+        id='key'
+        base='processes'
         list={listProcesses}
         size={10}
         width={'100%'}
         ro={this.state.ro}
-        qry={[
-          { key: 'key', name: 'Código', type: 'text' },
-          { key: 'name', name: 'Nome', type: 'text' }
-        ]}
         table={[
           {
             title: 'Código',

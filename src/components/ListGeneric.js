@@ -46,7 +46,7 @@ class ListGeneric extends React.Component {
     this.props
       .list(page, size, qr)
       .then(res => {
-        const data = res.data.data.users
+        const data = res.data.data[this.props.base]
         this.setState({
           data: data.list,
           lastPage: data.lastPage || 1,

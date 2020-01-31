@@ -25,14 +25,12 @@ class ListUnits extends React.Component {
       <ListGeneric
         title='Unidades'
         detail='/unit'
+        id='key'
+        base='units'
         list={listUnits}
         size={10}
         width={'100%'}
         ro={this.state.ro}
-        qry={[
-          { key: 'key', name: 'Código', type: 'text' },
-          { key: 'name', name: 'Nome', type: 'text' }
-        ]}
         table={[
           {
             title: 'Código',

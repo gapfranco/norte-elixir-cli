@@ -25,14 +25,12 @@ class ListRisks extends React.Component {
       <ListGeneric
         title='Riscos'
         detail='/risk'
+        id='key'
+        base='risks'
         list={listRisks}
         size={10}
         width={'100%'}
         ro={this.state.ro}
-        qry={[
-          { key: 'key', name: 'Código', type: 'text' },
-          { key: 'name', name: 'Nome', type: 'text' }
-        ]}
         table={[
           {
             title: 'Código',

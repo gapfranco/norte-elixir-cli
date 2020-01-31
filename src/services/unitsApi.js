@@ -2,46 +2,86 @@ import axios from 'axios'
 import { apiUrl } from '~/src/config/apiConfig'
 import { getAuthHeader } from './authApi'
 
-export function listUnits (page = 0, size = 0, query = null) {
-  let q = ''
-  let c = '?'
-  if (page) {
-    q = `${c}p=${page}`
-    c = '&'
+export function listUnits (page = 0, limit = 0, filter = null) {
+  const q = filter ? `, filter: {matching: "${filter}"}` : ''
+
+  const gql = `
+  query {
+    units(page: ${page}, limit: ${limit} ${q} ) {
+      count hasNext hasPrev nextPage prevPage page
+      list {
+        key
+        name
+      }
+    }
   }
-  if (query) {
-    q += `${c}f=${query.f}&c=${query.c}&v=${query.v}`
-    c = '&'
+  `
+  const body = {
+    query: gql
   }
-  if (size) {
-    q += `${c}s=${size}`
-    c = '&'
-  }
-  return axios.get(`${apiUrl}/units/${q}`, getAuthHeader())
+  return axios.post(`${apiUrl}`, body, getAuthHeader())
 }
 
-export function showUnit (id) {
-  return axios.get(`${apiUrl}/units/${id}`, getAuthHeader())
-}
-
-export function findUnit (uid) {
-  return axios.get(`${apiUrl}/units-find/${uid}`, getAuthHeader())
-}
-
-export function updateUnit (id, unit) {
-  const reg = {
-    unit
+export function showUnit (key) {
+  const gql = `
+  query {
+    unit(key: "${key}") {
+      id key name
+    }
   }
-  return axios.put(`${apiUrl}/units/${id}`, reg, getAuthHeader())
+  `
+  const body = {
+    query: gql
+  }
+  return axios.post(`${apiUrl}`, body, getAuthHeader())
+}
+
+export function updateUnit (unit) {
+  const gql = `
+  mutation {
+    unitUpdate(key: "${unit.key}", name: "${unit.name}") {
+      key 
+    }
+  }
+  `
+  const body = {
+    query: gql
+  }
+  return axios.post(`${apiUrl}`, body, getAuthHeader()).then(({ data }) => {
+    if (data.errors) {
+      throw data.errors[0].message
+    }
+  })
 }
 
 export function createUnit (unit) {
-  const reg = {
-    unit
+  const gql = `
+  mutation {
+    unitCreate(key: "${unit.key}", name: "${unit.name}") {
+      key 
+    }
   }
-  return axios.post(`${apiUrl}/units`, reg, getAuthHeader())
+  `
+  const body = {
+    query: gql
+  }
+  return axios.post(`${apiUrl}`, body, getAuthHeader()).then(({ data }) => {
+    if (data.errors) {
+      throw data.errors[0].message
+    }
+  })
 }
 
 export function deleteUnit (id) {
-  return axios.delete(`${apiUrl}/units/${id}`, getAuthHeader())
+  const gql = `
+  mutation {
+    unitDelete(key: "${id}") {
+      key 
+    }
+  }
+  `
+  const body = {
+    query: gql
+  }
+  return axios.post(`${apiUrl}`, body, getAuthHeader())
 }

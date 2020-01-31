@@ -2,46 +2,86 @@ import axios from 'axios'
 import { apiUrl } from '~/src/config/apiConfig'
 import { getAuthHeader } from './authApi'
 
-export function listAreas (page = 0, size = 0, query = null) {
-  let q = ''
-  let c = '?'
-  if (page) {
-    q = `${c}p=${page}`
-    c = '&'
+export function listAreas (page = 0, limit = 0, filter = null) {
+  const q = filter ? `, filter: {matching: "${filter}"}` : ''
+
+  const gql = `
+  query {
+    areas(page: ${page}, limit: ${limit} ${q} ) {
+      count hasNext hasPrev nextPage prevPage page
+      list {
+        key
+        name
+      }
+    }
   }
-  if (query) {
-    q += `${c}f=${query.f}&c=${query.c}&v=${query.v}`
-    c = '&'
+  `
+  const body = {
+    query: gql
   }
-  if (size) {
-    q += `${c}s=${size}`
-    c = '&'
-  }
-  return axios.get(`${apiUrl}/areas/${q}`, getAuthHeader())
+  return axios.post(`${apiUrl}`, body, getAuthHeader())
 }
 
-export function showArea (id) {
-  return axios.get(`${apiUrl}/areas/${id}`, getAuthHeader())
-}
-
-export function findArea (uid) {
-  return axios.get(`${apiUrl}/areas-find/${uid}`, getAuthHeader())
-}
-
-export function updateArea (id, area) {
-  const reg = {
-    area
+export function showArea (key) {
+  const gql = `
+  query {
+    area(key: "${key}") {
+      id key name
+    }
   }
-  return axios.put(`${apiUrl}/areas/${id}`, reg, getAuthHeader())
+  `
+  const body = {
+    query: gql
+  }
+  return axios.post(`${apiUrl}`, body, getAuthHeader())
+}
+
+export function updateArea (area) {
+  const gql = `
+  mutation {
+    areaUpdate(key: "${area.key}", name: "${area.name}") {
+      key 
+    }
+  }
+  `
+  const body = {
+    query: gql
+  }
+  return axios.post(`${apiUrl}`, body, getAuthHeader()).then(({ data }) => {
+    if (data.errors) {
+      throw data.errors[0].message
+    }
+  })
 }
 
 export function createArea (area) {
-  const reg = {
-    area
+  const gql = `
+  mutation {
+    areaCreate(key: "${area.key}", name: "${area.name}") {
+      key 
+    }
   }
-  return axios.post(`${apiUrl}/areas`, reg, getAuthHeader())
+  `
+  const body = {
+    query: gql
+  }
+  return axios.post(`${apiUrl}`, body, getAuthHeader()).then(({ data }) => {
+    if (data.errors) {
+      throw data.errors[0].message
+    }
+  })
 }
 
 export function deleteArea (id) {
-  return axios.delete(`${apiUrl}/areas/${id}`, getAuthHeader())
+  const gql = `
+  mutation {
+    areaDelete(key: "${id}") {
+      key 
+    }
+  }
+  `
+  const body = {
+    query: gql
+  }
+  return axios.post(`${apiUrl}`, body, getAuthHeader())
 }

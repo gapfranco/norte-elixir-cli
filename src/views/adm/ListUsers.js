@@ -29,6 +29,7 @@ class ListUsers extends React.Component {
         title='Usuários'
         detail='/user'
         id='uid'
+        base='users'
         list={listUser}
         size={10}
         width={'100%'}

@@ -25,13 +25,13 @@ class EditRisk extends React.Component {
       this.setState({
         data: { key: '', name: '' },
         loaded: true,
-        id: 0
+        id: id
       })
     } else {
       showRisk(id)
         .then(res => {
           this.setState({
-            data: res.data.data,
+            data: res.data.data.risk,
             loaded: true,
             id
           })
@@ -48,25 +48,25 @@ class EditRisk extends React.Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         this.setState({ isLoading: true })
-        if (!this.state.id) {
+        if (this.props.match.params.id === '+') {
           createRisk(values)
             .then(() => {
               this.setState({ isLoading: false })
               this.props.history.goBack()
             })
-            .catch(() => {
+            .catch((err) => {
               this.setState({ isLoading: false })
-              errorAlert('Erro', 'Erro na criação. Verifique se código de nível superior existe.', 5)
+              errorAlert('Erro', `Erro na criação. Verifique o formato do código (${err})`, 5)
             })
         } else {
-          updateRisk(this.state.id, values)
+          updateRisk(values)
             .then(() => {
               this.setState({ isLoading: false })
               this.props.history.goBack()
             })
-            .catch(() => {
+            .catch((err) => {
               this.setState({ isLoading: false })
-              errorAlert('Erro', 'Erro na atualização', 5)
+              errorAlert('Erro', `Erro de gravação (${err})`, 5)
             })
         }
       }
@@ -74,7 +74,7 @@ class EditRisk extends React.Component {
   }
 
   submitDelete = () => {
-    deleteRisk(this.state.data.id)
+    deleteRisk(this.state.data.key)
       .then(() => {
         message.error('Registro excluido')
         this.props.history.goBack()
@@ -100,10 +100,10 @@ class EditRisk extends React.Component {
     let actions = []
     actions.push(
       <Button type='primary' onClick={this.validSubmit} loading={this.state.isLoading}>
-          Gravar
+        Gravar
       </Button>
     )
-    if (this.state.id) {
+    if (this.state.id !== '+') {
       actions.push(
         <Popconfirm
           placement='top'
@@ -143,7 +143,7 @@ class EditRisk extends React.Component {
                   }
                 ],
                 initialValue: this.state.data.key
-              })(<Input placeholder='Código' style={{ width: '50%' }}disabled={!!this.state.id} />)}
+              })(<Input placeholder='Código' style={{ width: '50%' }} disabled={this.props.match.params.id !== '+'} />)}
             </Form.Item>
             <Form.Item label={'Nome'}>
               {getFieldDecorator('name', {

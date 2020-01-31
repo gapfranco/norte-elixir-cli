@@ -2,46 +2,86 @@ import axios from 'axios'
 import { apiUrl } from '~/src/config/apiConfig'
 import { getAuthHeader } from './authApi'
 
-export function listProcesses (page = 0, size = 0, query = null) {
-  let q = ''
-  let c = '?'
-  if (page) {
-    q = `${c}p=${page}`
-    c = '&'
+export function listProcesses (page = 0, limit = 0, filter = null) {
+  const q = filter ? `, filter: {matching: "${filter}"}` : ''
+
+  const gql = `
+  query {
+    processes(page: ${page}, limit: ${limit} ${q} ) {
+      count hasNext hasPrev nextPage prevPage page
+      list {
+        key
+        name
+      }
+    }
   }
-  if (query) {
-    q += `${c}f=${query.f}&c=${query.c}&v=${query.v}`
-    c = '&'
+  `
+  const body = {
+    query: gql
   }
-  if (size) {
-    q += `${c}s=${size}`
-    c = '&'
-  }
-  return axios.get(`${apiUrl}/processes/${q}`, getAuthHeader())
+  return axios.post(`${apiUrl}`, body, getAuthHeader())
 }
 
-export function showProcess (id) {
-  return axios.get(`${apiUrl}/processes/${id}`, getAuthHeader())
-}
-
-export function findProcess (uid) {
-  return axios.get(`${apiUrl}/processes-find/${uid}`, getAuthHeader())
-}
-
-export function updateProcess (id, process) {
-  const reg = {
-    process
+export function showProcess (key) {
+  const gql = `
+  query {
+    process(key: "${key}") {
+      id key name
+    }
   }
-  return axios.put(`${apiUrl}/processes/${id}`, reg, getAuthHeader())
+  `
+  const body = {
+    query: gql
+  }
+  return axios.post(`${apiUrl}`, body, getAuthHeader())
+}
+
+export function updateProcess (process) {
+  const gql = `
+  mutation {
+    processUpdate(key: "${process.key}", name: "${process.name}") {
+      key 
+    }
+  }
+  `
+  const body = {
+    query: gql
+  }
+  return axios.post(`${apiUrl}`, body, getAuthHeader()).then(({ data }) => {
+    if (data.errors) {
+      throw data.errors[0].message
+    }
+  })
 }
 
 export function createProcess (process) {
-  const reg = {
-    process
+  const gql = `
+  mutation {
+    processCreate(key: "${process.key}", name: "${process.name}") {
+      key 
+    }
   }
-  return axios.post(`${apiUrl}/processes`, reg, getAuthHeader())
+  `
+  const body = {
+    query: gql
+  }
+  return axios.post(`${apiUrl}`, body, getAuthHeader()).then(({ data }) => {
+    if (data.errors) {
+      throw data.errors[0].message
+    }
+  })
 }
 
 export function deleteProcess (id) {
-  return axios.delete(`${apiUrl}/processes/${id}`, getAuthHeader())
+  const gql = `
+  mutation {
+    processDelete(key: "${id}") {
+      key 
+    }
+  }
+  `
+  const body = {
+    query: gql
+  }
+  return axios.post(`${apiUrl}`, body, getAuthHeader())
 }

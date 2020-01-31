@@ -25,13 +25,13 @@ class EditUnit extends React.Component {
       this.setState({
         data: { key: '', name: '' },
         loaded: true,
-        id: 0
+        id: id
       })
     } else {
       showUnit(id)
         .then(res => {
           this.setState({
-            data: res.data.data,
+            data: res.data.data.unit,
             loaded: true,
             id
           })
@@ -48,25 +48,25 @@ class EditUnit extends React.Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         this.setState({ isLoading: true })
-        if (!this.state.id) {
+        if (this.props.match.params.id === '+') {
           createUnit(values)
             .then(() => {
               this.setState({ isLoading: false })
               this.props.history.goBack()
             })
-            .catch(() => {
+            .catch((err) => {
               this.setState({ isLoading: false })
-              errorAlert('Erro', 'Erro na criação do usuário. Verifique se código de nível superior existe.', 5)
+              errorAlert('Erro', `Erro na criação. Verifique o formato do código (${err})`, 5)
             })
         } else {
-          updateUnit(this.state.id, values)
+          updateUnit(values)
             .then(() => {
               this.setState({ isLoading: false })
               this.props.history.goBack()
             })
             .catch(() => {
               this.setState({ isLoading: false })
-              errorAlert('Erro', 'Erro na atualização do usuário', 5)
+              errorAlert('Erro', `Erro de gravação (${err})`, 5)
             })
         }
       }
@@ -74,7 +74,7 @@ class EditUnit extends React.Component {
   }
 
   submitDelete = () => {
-    deleteUnit(this.state.data.id)
+    deleteUnit(this.state.data.key)
       .then(() => {
         message.error('Registro excluido')
         this.props.history.goBack()
@@ -100,10 +100,10 @@ class EditUnit extends React.Component {
     let actions = []
     actions.push(
       <Button type='primary' onClick={this.validSubmit} loading={this.state.isLoading}>
-          Gravar
+        Gravar
       </Button>
     )
-    if (this.state.id) {
+    if (this.state.id !== '+') {
       actions.push(
         <Popconfirm
           placement='top'
@@ -121,7 +121,7 @@ class EditUnit extends React.Component {
     return (
       <Row type='flex' justify='center' align='middle' >
         <Card
-          title='Unidades'
+          title='Unidade'
           className='card_data'
           style={{ width: '80%', marginTop: '32px' }}
           actions={actions}
@@ -143,7 +143,7 @@ class EditUnit extends React.Component {
                   }
                 ],
                 initialValue: this.state.data.key
-              })(<Input placeholder='Código' style={{ width: '50%' }}disabled={!!this.state.id} />)}
+              })(<Input placeholder='Código' style={{ width: '50%' }} disabled={this.props.match.params.id !== '+'} />)}
             </Form.Item>
             <Form.Item label={'Nome'}>
               {getFieldDecorator('name', {

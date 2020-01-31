@@ -63,7 +63,6 @@ class EditUser extends React.Component {
               errorAlert('Erro', 'Erro na criação do usuário: ' + err, 5)
             })
         } else {
-          console.log(values)
           updateUser(values)
             .then(() => {
               this.props.history.goBack()
@@ -113,7 +112,6 @@ class EditUser extends React.Component {
     if (!this.state.loaded) {
       return null
     }
-    console.log(this.state, this.props.user)
     let actions = []
     if (this.state.admin) {
       actions.push(
@@ -165,7 +163,7 @@ class EditUser extends React.Component {
                       }
                     ],
                     initialValue: this.state.user.uid
-                  })(<Input placeholder='Código' disabled={!!this.state.id} />)}
+                  })(<Input placeholder='Código' disabled={this.props.match.params.id !== '+'} />)}
                 </Form.Item>
               </Col>
               <Col span={16}>

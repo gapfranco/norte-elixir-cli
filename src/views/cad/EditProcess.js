@@ -25,13 +25,13 @@ class EditProcess extends React.Component {
       this.setState({
         data: { key: '', name: '' },
         loaded: true,
-        id: 0
+        id: id
       })
     } else {
       showProcess(id)
         .then(res => {
           this.setState({
-            data: res.data.data,
+            data: res.data.data.process,
             loaded: true,
             id
           })
@@ -48,25 +48,25 @@ class EditProcess extends React.Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         this.setState({ isLoading: true })
-        if (!this.state.id) {
+        if (this.props.match.params.id === '+') {
           createProcess(values)
             .then(() => {
               this.setState({ isLoading: false })
               this.props.history.goBack()
             })
-            .catch(() => {
+            .catch((err) => {
               this.setState({ isLoading: false })
-              errorAlert('Erro', 'Erro na criação. Verifique se código de nível superior existe.', 5)
+              errorAlert('Erro', `Erro na criação. Verifique o formato do código (${err})`, 5)
             })
         } else {
-          updateProcess(this.state.id, values)
+          updateProcess(values)
             .then(() => {
               this.setState({ isLoading: false })
               this.props.history.goBack()
             })
             .catch(() => {
               this.setState({ isLoading: false })
-              errorAlert('Erro', 'Erro na atualização', 5)
+              errorAlert('Erro', `Erro de gravação (${err})`, 5)
             })
         }
       }
@@ -74,7 +74,7 @@ class EditProcess extends React.Component {
   }
 
   submitDelete = () => {
-    deleteProcess(this.state.data.id)
+    deleteProcess(this.state.data.key)
       .then(() => {
         message.error('Registro excluido')
         this.props.history.goBack()
@@ -103,7 +103,7 @@ class EditProcess extends React.Component {
           Gravar
       </Button>
     )
-    if (this.state.id) {
+    if (this.state.id !== '+') {
       actions.push(
         <Popconfirm
           placement='top'
@@ -143,7 +143,7 @@ class EditProcess extends React.Component {
                   }
                 ],
                 initialValue: this.state.data.key
-              })(<Input placeholder='Código' style={{ width: '50%' }}disabled={!!this.state.id} />)}
+              })(<Input placeholder='Código' style={{ width: '50%' }} disabled={this.props.match.params.id !== '+'} />)}
             </Form.Item>
             <Form.Item label={'Nome'}>
               {getFieldDecorator('name', {
