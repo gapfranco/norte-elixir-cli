@@ -123,16 +123,32 @@ class BasePage extends React.Component {
                 key='sub3'
                 title={
                   <span>
-                    <Icon type='sync' />
-                    <span>Processamento</span>
+                    <Icon type='check' />
+                    <span>Conformidade</span>
                   </span>
                 }
               >
-                <Menu.Item key='10' onClick={() => this.handleLink('/periods')}>
-                  <Icon type='import' />
-                  Períodos
+                <Menu.Item key='items' onClick={() => this.handleLink('/items')}>
+                  <Icon type='profile' />
+                  Itens
                 </Menu.Item>
-                <Menu.Item key='11' onClick={() => this.handleLink('/')}>
+
+                <Menu.Item key='tests' onClick={() => this.handleLink('/tests')}>
+                  <Icon type='sync' />
+                  Testes
+                </Menu.Item>
+
+                <Menu.Item key='events' onClick={() => this.handleLink('/events')}>
+                  <Icon type='thunderbolt' />
+                  Eventos
+                </Menu.Item>
+
+                <Menu.Item key='events' onClick={() => this.handleLink('/actions')}>
+                  <Icon type='carry-out' />
+                  Ações
+                </Menu.Item>
+
+                <Menu.Item key='dash' onClick={() => this.handleLink('/')}>
                   <Icon type='dashboard' />
                   Painel
                 </Menu.Item>
