@@ -23,7 +23,7 @@ export function signIn (uid, password) {
 export function signUpUser (cid, clientname, usr, email, username, password) {
   const gql = `
   mutation {
-    signup(input: {cid: "${cid}", name: "${clientname}", uid: "${usr}@${cid}", email: "${email}", 
+    signup(input: {cid: "${cid}", name: "${clientname}", uid: "${usr}", email: "${email}", 
     username: "${username}", password: "${password}", password_confirmation: "${password}"}) { 
       cid
       name 
