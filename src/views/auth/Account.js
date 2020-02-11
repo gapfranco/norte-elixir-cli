@@ -2,10 +2,9 @@ import React from 'react'
 
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Form, Icon, Input, Button, Row, message, Card } from 'antd'
+import { Row, Card } from 'antd'
 import BasePage from '~/src/components/BasePage'
-import { errorAlert } from '~/src/services/utils'
-import { signOut } from '~/src/services/authApi'
+import { me } from '~/src/services/authApi'
 import { bindActionCreators } from 'redux'
 
 import { Creators as userActions } from '~/src/redux/ducks/user'
@@ -19,26 +18,32 @@ class Account extends React.Component {
     }
   }
 
-  handleDisconnect = () => {
-    // e.preventDefault()
-    // signOut()
-    // this.props.userActions.signOut()
-    this.props.history.push('/')
-  };
+  componentDidMount () {
+    me().then(res => {
+      this.setState({
+        me: res.data.data.me,
+        ok: true
+      })
+    })
+  }
 
   render () {
+    if (!this.state.ok) {
+      return null
+    }
     return (
-      <Row type='flex' justify='center' align='middle'>
+      <Row type='flex' justify='start' align='middle'>
         <Card
           title='Informações da conexão'
           className='card_data'
-          style={{ width: 500, marginTop: '32px' }}
+          style={{ width: 600, marginTop: '32px' }}
         >
-          <Row type='flex' justify='center' align='middle'>
-            <Button type='primary' onClick={this.handleDisconnect}>
-              Fechar
-            </Button>
-          </Row>
+          <p><strong>Usuário</strong></p>
+          <p>{this.state.me.uid} - {this.state.me.username}</p>
+          <p><strong>E-Mail</strong></p>
+          <p>{this.state.me.email}</p>
+          <p><strong>Cliente</strong></p>
+          <p>{this.state.me.client.cid} - {this.state.me.client.name}</p>
         </Card>
       </Row>
     )

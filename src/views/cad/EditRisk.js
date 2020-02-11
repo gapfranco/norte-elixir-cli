@@ -119,7 +119,7 @@ class EditRisk extends React.Component {
     actions.push(<Button onClick={() => this.props.history.goBack()}>Voltar</Button>)
 
     return (
-      <Row type='flex' justify='center' align='middle' >
+      <Row type='flex' justify='start' align='middle' >
         <Card
           title='Risco'
           className='card_data'

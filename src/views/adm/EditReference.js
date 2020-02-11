@@ -147,7 +147,7 @@ class EditReference extends React.Component {
       <Button onClick={() => this.props.history.goBack()}>Voltar</Button>
     )
     return (
-      <Row type='flex' justify='center' align='middle'>
+      <Row type='flex' justify='start' align='middle'>
         <Card
           title='Valores de referência'
           className='card_data'

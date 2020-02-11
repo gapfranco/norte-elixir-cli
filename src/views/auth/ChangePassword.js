@@ -57,7 +57,7 @@ class ChangePassword extends React.Component {
   render () {
     const { getFieldDecorator } = this.props.form
     return (
-      <Row type='flex' justify='center' align='middle'>
+      <Row type='flex' justify='start' align='middle'>
         <Card
           title='Alterar a senha atual'
           className='card_data'

@@ -94,7 +94,7 @@ export function changePassword (oldPassword, password, confirmPassword) {
 }
 
 export function me () {
-  const gql = '{ me { uid username email admin }}'
+  const gql = '{ me { uid username email admin client { cid name } }}'
   const body = {
     query: gql
   }
