@@ -55,7 +55,12 @@ export function resetPassword (uid) {
   const body = {
     query: gql
   }
-  return axios.post(`${apiUrl}`, body)
+  // return axios.post(`${apiUrl}`, body)
+  return axios.post(`${apiUrl}`, body).then(({ data }) => {
+    if (data.errors) {
+      throw data.errors[0].message
+    }
+  })
 }
 
 export function newPassword (uid, token, password, passwordConfirmation) {

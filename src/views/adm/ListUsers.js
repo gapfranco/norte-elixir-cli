@@ -37,12 +37,12 @@ class ListUsers extends React.Component {
         table={[
           {
             title: 'Id',
-            width: 200,
+            width: 250,
             dataIndex: 'uid'
           },
           {
             title: 'Name',
-            width: 350,
+            width: 450,
             dataIndex: 'username'
           },
           {
@@ -52,13 +52,13 @@ class ListUsers extends React.Component {
           {
             title: 'Admin',
             dataIndex: 'admin',
-            width: 80,
+            width: 120,
             render: admin => <Checkbox checked={admin} />
           },
           {
             title: 'Bloqueado',
             dataIndex: 'block',
-            width: 80,
+            width: 120,
             render: block => <Checkbox checked={block} />
           }
         ]}
