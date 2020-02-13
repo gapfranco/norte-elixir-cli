@@ -60,7 +60,7 @@ class BasePage extends React.Component {
               </Menu.Item>
               <Menu.Item key='dash' onClick={() => this.handleLink('/')}>
                 <Icon type='dashboard' />
-                Painel
+                <span>Painel</span>
               </Menu.Item>
 
               <SubMenu
@@ -158,6 +158,11 @@ class BasePage extends React.Component {
                   </span>
                 }
               >
+                <Menu.Item key='results' onClick={() => this.handleLink('/')}>
+                  <Icon type='upload' />
+                  Resultados
+                </Menu.Item>
+
                 <Menu.Item key='events' onClick={() => this.handleLink('/')}>
                   <Icon type='thunderbolt' />
                   Apontamentos
