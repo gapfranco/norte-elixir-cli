@@ -77,7 +77,7 @@ class ForgotPassword extends React.Component {
                 Criar senha
               </Button>
               <Button type='default' onClick={() => this.props.history.push('/signin')}>
-                Conectar
+                Voltar
               </Button>
             </Row>
           </Form>

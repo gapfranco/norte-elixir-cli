@@ -143,7 +143,7 @@ class BasePage extends React.Component {
                   Eventos
                 </Menu.Item>
 
-                <Menu.Item key='events' onClick={() => this.handleLink('/actions')}>
+                <Menu.Item key='actions' onClick={() => this.handleLink('/actions')}>
                   <Icon type='carry-out' />
                   Ações
                 </Menu.Item>

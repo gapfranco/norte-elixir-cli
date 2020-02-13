@@ -92,8 +92,9 @@ class EditUser extends React.Component {
   }
 
   verifySlug = (rule, value, callback) => {
-    if (value && this.props.match.params.id === '+' && !value.match(/^[a-z](-?[a-z0-9])*$/)) {
-      callback(new Error('Só deve conter letras minúsculas, numeros e travessão (-)'))
+    if (value && this.props.match.params.id === '+' && (value.length < 3 || value.length > 20 ||
+    !value.match(/^[a-z](-?[a-z0-9])*$/))) {
+      callback(new Error('De 3 a 20 letras minúsculas, numeros ou travessão'))
     } else {
       callback()
     }
@@ -141,7 +142,7 @@ class EditUser extends React.Component {
         <Card
           title='Usuário'
           className='card_data'
-          style={{ width: '80%', marginTop: '32px' }}
+          style={{ width: '80%' }}
           actions={actions}
         >
           <Form
@@ -198,7 +199,7 @@ class EditUser extends React.Component {
                 initialValue: this.state.user.admin
               })(
                 <Checkbox disabled={!this.state.admin || this.state.user.id === this.props.user}>
-                    Administrador
+                  Administrador
                 </Checkbox>
               )}
             </Form.Item>
@@ -208,7 +209,7 @@ class EditUser extends React.Component {
                 initialValue: this.state.user.block
               })(
                 <Checkbox disabled={!this.state.admin || this.state.user.id === this.props.user}>
-                    Bloqueado
+                  Bloqueado
                 </Checkbox>
               )}
             </Form.Item>

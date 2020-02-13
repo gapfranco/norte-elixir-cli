@@ -123,7 +123,7 @@ class EditUnit extends React.Component {
         <Card
           title='Unidade'
           className='card_data'
-          style={{ width: '80%', marginTop: '32px' }}
+          style={{ width: '80%' }}
           actions={actions}
         >
           <Form

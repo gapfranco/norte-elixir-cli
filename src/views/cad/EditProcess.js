@@ -100,7 +100,7 @@ class EditProcess extends React.Component {
     let actions = []
     actions.push(
       <Button type='primary' onClick={this.validSubmit} loading={this.state.isLoading}>
-          Gravar
+        Gravar
       </Button>
     )
     if (this.state.id !== '+') {
@@ -123,7 +123,7 @@ class EditProcess extends React.Component {
         <Card
           title='Processo'
           className='card_data'
-          style={{ width: '80%', marginTop: '32px' }}
+          style={{ width: '80%' }}
           actions={actions}
         >
           <Form

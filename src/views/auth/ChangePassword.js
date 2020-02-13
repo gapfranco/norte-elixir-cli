@@ -61,7 +61,7 @@ class ChangePassword extends React.Component {
         <Card
           title='Alterar a senha atual'
           className='card_data'
-          style={{ width: 500, marginTop: '32px' }}
+          style={{ width: 500 }}
         >
           <Form onSubmit={this.validSubmit} colon={false} className='change-form'>
             <Form.Item>

@@ -30,7 +30,7 @@ class ListGeneric extends React.Component {
       search: this.props.query ? this.props.query.v : '',
       query: this.props.query,
       size: this.props.size || 10,
-      style: { width: '100%', marginTop: '32px' },
+      style: { width: '100%' },
       ro: this.props.ro || false
     }
   }

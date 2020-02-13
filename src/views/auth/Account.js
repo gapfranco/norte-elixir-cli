@@ -36,7 +36,7 @@ class Account extends React.Component {
         <Card
           title='Informações da conexão'
           className='card_data'
-          style={{ width: 600, marginTop: '32px' }}
+          style={{ width: 600 }}
         >
           <p><strong>Usuário</strong></p>
           <p>{this.state.me.uid} - {this.state.me.username}</p>

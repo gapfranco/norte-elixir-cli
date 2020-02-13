@@ -48,8 +48,9 @@ class SignUp extends React.Component {
   }
 
   verifySlug = (rule, value, callback) => {
-    if (value && !value.match(/^[a-z](-?[a-z0-9])*$/)) {
-      callback(new Error('Só deve conter letras minúsculas, numeros e travessão (-)'))
+    if (value && (value.length < 3 || value.length > 20 ||
+      !value.match(/^[a-z](-?[a-z0-9])*$/))) {
+      callback(new Error('De 3 a 20 letras minúsculas, numeros ou travessão'))
     } else {
       callback()
     }
@@ -67,9 +68,11 @@ class SignUp extends React.Component {
     let ex = false
     if (value) {
       ex = await clientFind(value)
-    }
-    if (ex.data.data.client) {
-      callback(new Error('Já existe cliente com este código'))
+      if (ex.data.data.client) {
+        callback(new Error('Já existe cliente com este código'))
+      } else {
+        callback()
+      }
     } else {
       callback()
     }

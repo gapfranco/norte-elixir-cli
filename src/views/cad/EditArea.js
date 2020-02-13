@@ -123,7 +123,7 @@ class EditArea extends React.Component {
         <Card
           title='Área'
           className='card_data'
-          style={{ width: '80%', marginTop: '32px' }}
+          style={{ width: '80%' }}
           actions={actions}
         >
           <Form
