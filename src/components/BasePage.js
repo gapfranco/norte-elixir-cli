@@ -58,6 +58,10 @@ class BasePage extends React.Component {
                 <Icon type='home' />
                 <span>Home</span>
               </Menu.Item>
+              <Menu.Item key='dash' onClick={() => this.handleLink('/')}>
+                <Icon type='dashboard' />
+                Painel
+              </Menu.Item>
 
               <SubMenu
                 key='sub1'
@@ -133,26 +137,39 @@ class BasePage extends React.Component {
                   Itens
                 </Menu.Item>
 
-                <Menu.Item key='tests' onClick={() => this.handleLink('/tests')}>
+                <Menu.Item key='tests' onClick={() => this.handleLink('/')}>
                   <Icon type='sync' />
                   Testes
                 </Menu.Item>
 
-                <Menu.Item key='events' onClick={() => this.handleLink('/events')}>
-                  <Icon type='thunderbolt' />
-                  Eventos
+                <Menu.Item key='quest' onClick={() => this.handleLink('/')}>
+                  <Icon type='question' />
+                  Questionários
                 </Menu.Item>
 
-                <Menu.Item key='actions' onClick={() => this.handleLink('/actions')}>
+              </SubMenu>
+
+              <SubMenu
+                key='sub4'
+                title={
+                  <span>
+                    <Icon type='flag' />
+                    <span>Aderencia</span>
+                  </span>
+                }
+              >
+                <Menu.Item key='events' onClick={() => this.handleLink('/')}>
+                  <Icon type='thunderbolt' />
+                  Apontamentos
+                </Menu.Item>
+
+                <Menu.Item key='actions' onClick={() => this.handleLink('/')}>
                   <Icon type='carry-out' />
                   Ações
                 </Menu.Item>
 
-                <Menu.Item key='dash' onClick={() => this.handleLink('/')}>
-                  <Icon type='dashboard' />
-                  Painel
-                </Menu.Item>
               </SubMenu>
+
             </Menu>
           </Sider>
           <Layout>
