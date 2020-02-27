@@ -2,13 +2,26 @@ import React from 'react'
 
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Form, Input, Button, Row, message, Card, Popconfirm, Icon, Tabs } from 'antd'
+import { Form, Input, Button, Row, message, Card, Popconfirm, Icon, Tabs, Select, DatePicker } from 'antd'
 import BasePage from '~/src/components/BasePage'
 import SubListGeneric from '~/src/components/SubListGeneric'
 
 import { showItem, updateItem, createItem, deleteItem } from '~/src/services/itemsApi'
 import { listMappings } from '~/src/services/mappingsApi'
 import { errorAlert } from '~/src/services/utils'
+
+const moment = require('moment')
+const dateFormat = 'YYYY-MM-DD'
+
+const frequencies = [
+  { key: 'diario', name: 'Diário' },
+  { key: 'semanal', name: 'Semanal' },
+  { key: 'mensal', name: 'Mensal' },
+  { key: 'bimestral', name: 'Bimestral' },
+  { key: 'trimestral', name: 'Trimestral' },
+  { key: 'semestral', name: 'Semestral' },
+  { key: 'anual', name: 'Anual' }
+]
 
 class EditItem extends React.Component {
   constructor (props) {
@@ -25,7 +38,7 @@ class EditItem extends React.Component {
     const id = this.props.match.params.id
     if (id === '+') {
       this.setState({
-        data: { key: '', name: '' },
+        data: { key: '', name: '', period: '', base: '' },
         loaded: true,
         id: id
       })
@@ -87,11 +100,19 @@ class EditItem extends React.Component {
   }
 
   verifyId = (rule, value, callback) => {
-    if (value && !this.state.key && !value.match(/^[a-z0-9](\.?[a-z0-9])*$/)) {
+    if (value && this.props.match.params.id === '+' && !value.match(/^[a-z0-9](\.?[a-z0-9])*$/)) {
       callback(new Error('Só deve conter letras minúsculas, numeros e pontos (.)'))
     } else {
       callback()
     }
+  }
+
+  handlePeriod = value => {
+    this.setState({ data: { ...this.state.data, period: value } }, () => console.log(this.state.data))
+  }
+
+  handleBase = value => {
+    this.setState({ data: { ...this.state.data, base: value.format(dateFormat) } }, () => console.log(this.state.data))
   }
 
   render () {
@@ -172,14 +193,45 @@ class EditItem extends React.Component {
 
                 <Form.Item label={'Periodicidade'}>
                   {getFieldDecorator('period', {
+                    rules: [
+                      {
+                        required: false,
+                        message: 'Informe a periodicidade'
+                      }
+                    ],
                     initialValue: this.state.data.period
-                  })(<Input placeholder='Periodicidade' />)}
+                  })(
+                    <Select
+                      onChange={this.handlePeriod}
+                      style={{ width: 160 }}
+                    >
+                      <Select.Option value={''}>Nenhuma</Select.Option>
+                      {frequencies.map(item => (
+                        <Select.Option key={item.key} value={item.key}>
+                          {item.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  )}
                 </Form.Item>
                 <Form.Item label={'Data base'}>
                   {getFieldDecorator('base', {
-                    initialValue: this.state.data.period
-                  })(<Input placeholder='Data base' />)}
+                    rules: [
+                      {
+                        required: false,
+                        message: 'Informe a data base'
+                      }
+                    ],
+                    initialValue: this.state.data.base ? moment(this.state.data.base, dateFormat) : ''
+                  })(
+                    <DatePicker
+                      format={'DD/MM/YYYY'}
+                      placeholder='Data base'
+                      onChange={this.handleBase}
+                    />
+                  )}
                 </Form.Item>
+
               </Tabs.TabPane>
               {this.state.id !== '+' && (
                 <Tabs.TabPane

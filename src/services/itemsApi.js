@@ -26,7 +26,7 @@ export function showItem (key) {
   const gql = `
   query {
     item(key: "${key}") {
-      id key name
+      id key name period base
     }
   }
   `
@@ -37,13 +37,26 @@ export function showItem (key) {
 }
 
 export function updateItem (item) {
+  let per = ''
+  let bas = ''
+  if (item.period) {
+    per = `, period: ${item.period.toUpperCase()}`
+  } else if (item.period === '') {
+    per = `, period: null`
+  }
+  if (item.base) {
+    bas = `, base: "${item.base.format('YYYY-MM-DD')}"`
+  } else if (item.base === '') {
+    bas = `, base: null`
+  }
   const gql = `
   mutation {
-    itemUpdate(key: "${item.key}", name: "${item.name}") {
+    itemUpdate(key: "${item.key}", name: "${item.name}" ${per} ${bas}) {
       key 
     }
   }
   `
+  console.log(gql)
   const body = {
     query: gql
   }
