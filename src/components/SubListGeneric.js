@@ -10,70 +10,43 @@ import {
   Row,
   Card,
   Table,
-  Select,
-  Tooltip,
-  DatePicker,
-  InputNumber
+  Tooltip
 } from 'antd'
 import queryString from 'query-string'
-
-const moment = require('moment')
 
 class SubListGeneric extends React.Component {
   constructor (props) {
     super(props)
-    const f = this.props.query ? this.props.query.f : ''
-    const qf = this.props.qry.find(e => e.key === f)
-    const type = qf ? qf.type || 'text' : 'text'
     this.state = {
       error: null,
       loaded: false,
       data: null,
       search: this.props.query ? this.props.query.v : '',
-      field: this.props.query ? this.props.query.f : '',
-      order: this.props.order ? this.props.order : '',
-      oper: this.props.query ? this.props.query.q : '=',
-      qry: this.props.qry,
       query: this.props.query,
       size: this.props.size || 10,
-      style: { width: '100%', marginTop: '8px' },
-      type,
-      ro: this.props.ro || false,
-      opr: [
-        { key: '=', name: 'Igual a' },
-        { key: '>', name: 'Maior que' },
-        { key: '>=', name: 'Maior ou igual a' },
-        { key: '<', name: 'Menor que' },
-        { key: '<=', name: 'Menor ou igual a' },
-        { key: 's', name: 'Inicia com' },
-        { key: 'c', name: 'Contém' }
-      ]
+      style: { width: '100%', borderWidth: 0 },
+      ro: this.props.ro || false
     }
   }
 
   componentDidMount () {
     const values = queryString.parse(this.props.location.search)
     const page = values.page ? parseInt(values.page, 10) : this.props.page || 1
-    this.makeRequest(
-      this.props.id,
-      page,
-      this.props.size,
-      this.props.query,
-      this.props.order
-    )
+    this.makeRequest(this.props.id, page, this.props.size, this.props.query)
   }
 
-  makeRequest = (id, page, size, s = null) => {
+  makeRequest = (id, page, size) => {
     const qr = this.state.query
     this.props
-      .list(id, page, size, qr, s)
+      .list(id, page, size, qr)
       .then(res => {
+        const data = res.data.data[this.props.base]
         this.setState({
-          data: res.data.data,
-          lastPage: res.data.lastPage || 1,
-          page: res.data.page || 1,
-          perPage: res.data.perPage || size,
-          total: res.data.total ? parseInt(res.data.total, 10) : 0,
+          data: data.list,
+          lastPage: data.lastPage || 1,
+          page: data.page || 1,
+          perPage: data.perPage || size,
+          total: data.count ? parseInt(data.count, 10) : 0,
           loaded: true,
           style: { ...this.state.style, width: this.props.width || '100%' }
         })
@@ -83,45 +56,13 @@ class SubListGeneric extends React.Component {
       })
   }
 
-  handleField = value => {
-    this.setState({ field: value, search: '' })
-    const qf = this.state.qry.find(e => e.key === value)
-    const type = qf ? qf.type || 'text' : 'text'
-    this.setState({ type })
-  }
-
-  handleOper = value => {
-    this.setState({ oper: value })
-  }
-
   handleSearch = event => {
-    // console.log(event)
     this.setState({ search: event.target.value })
   }
 
-  handleSearchNumber = value => {
-    this.setState({ search: value })
-  }
-
-  handleSearchDate = value => {
-    this.setState({ search: value.format() })
-  }
-
   startSearch = () => {
-    if (this.state.field && this.state.search) {
-      const qf = this.state.qry.find(e => e.key === this.state.field)
-      let q = this.state.oper
-      let v = this.state.search
-      if (qf && qf.type && (qf.type === 'number' || qf.type === 'date')) {
-        if (q === 's' || q === 'c') {
-          q = '='
-        }
-        if (qf.type === 'number') {
-          v = isNaN(v) ? 0 : v
-        }
-      }
-      let qr = { f: this.state.field, q, v }
-      this.setState({ query: qr }, () => {
+    if (this.state.search) {
+      this.setState({ query: this.state.search }, () => {
         this.makeRequest(this.props.id, 1, this.props.size)
       })
     } else {
@@ -132,15 +73,7 @@ class SubListGeneric extends React.Component {
   }
 
   clearSearch = () => {
-    this.setState(
-      {
-        field: '',
-        oper: '=',
-        search: '',
-        order: '',
-        type: 'text',
-        query: null
-      },
+    this.setState({ query: null, search: '' },
       () => {
         this.makeRequest(this.props.id, 1, this.props.size)
       }
@@ -148,7 +81,7 @@ class SubListGeneric extends React.Component {
   }
 
   handleClick = id => {
-    this.props.history.push(`/${this.props.detail}/${this.props.id}/${id}`)
+    this.props.history.push(`/${this.props.detail}/${id}`)
   }
 
   truncate = (str, nr) => {
@@ -179,7 +112,6 @@ class SubListGeneric extends React.Component {
       total: this.state.total,
       onChange: this.onChangePage
     }
-    const dateFormat = 'YYYY-MM-DD'
     return (
       <Row type='flex' justify='center' align='middle'>
         <Card
@@ -187,115 +119,64 @@ class SubListGeneric extends React.Component {
           className='card_data'
           style={this.state.style}
         >
-          <div style={{ paddingBottom: '8px' }}>
-            <Form layout='inline'>
-              <Form.Item>
-                <Tooltip placement='top' title={'Campo a pesquisar'}>
-                  <Select
-                    value={this.state.field}
-                    onChange={this.handleField}
-                    style={{ width: 160 }}
-                  >
-                    <Select.Option value={''}>Buscar</Select.Option>
-                    {this.state.qry.map(item => (
-                      <Select.Option key={item.key} value={item.key}>
-                        {item.name}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </Tooltip>
-              </Form.Item>
-              <Form.Item>
-                <Tooltip placement='top' title={'Tipo de comparação'}>
-                  <Select
-                    value={this.state.oper}
-                    onChange={this.handleOper}
-                    style={{ width: 150 }}
-                  >
-                    {this.state.opr.map(item => (
-                      <Select.Option key={item.key} value={item.key}>
-                        {item.name}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </Tooltip>
-              </Form.Item>
+          <div style={{ paddingBottom: '8px', display: 'flex', flexDirection: 'row' }}>
+            {this.props.search && (
+            <>
               <Form.Item>
                 <Tooltip placement='top' title={'Valor a buscar'}>
-                  {this.state.type === 'date' ? (
-                    <DatePicker
-                      value={
-                        this.state.search
-                          ? moment(this.state.search, dateFormat)
-                          : null
-                      }
-                      format={dateFormat}
-                      placeholder='Data a buscar'
-                      onChange={this.handleSearchDate}
-                    />
-                  ) : null}
-                  {this.state.type === 'number' ? (
-                    <InputNumber
-                      style={{ width: 320 }}
-                      value={this.state.search}
-                      placeholder='Valor a buscar'
-                      onChange={this.handleSearchNumber}
-                    />
-                  ) : null}
-                  {this.state.type === 'text' ? (
-                    <Input
-                      style={{ width: 320 }}
-                      value={this.state.search}
-                      type={this.state.type}
-                      prefix={
-                        <Icon
-                          type='search'
-                          style={{ color: 'rgba(0,0,0,.25)' }}
-                        />
-                      }
-                      placeholder='Valor a buscar'
-                      allowClear
-                      onChange={this.handleSearch}
-                    />
-                  ) : null}
+                  <Input
+                    style={{ width: 320, marginRight: 8 }}
+                    value={this.state.search}
+                    type={this.state.type}
+                    prefix={
+                      <Icon
+                        type='search'
+                        style={{ color: 'rgba(0,0,0,.25)' }}
+                      />
+                    }
+                    placeholder='Valor a buscar'
+                    allowClear
+                    onChange={this.handleSearch}
+                  />
                 </Tooltip>
               </Form.Item>
               <Form.Item>
                 <Tooltip placement='bottom' title={'Inicia a busca'}>
-                  <Button icon='search' onClick={this.startSearch} />
+                  <Button icon='search' style={{ marginRight: 8 }}onClick={this.startSearch} />
                 </Tooltip>
               </Form.Item>
               <Form.Item>
                 <Tooltip placement='bottom' title={'Limpa e cancela a busca'}>
-                  <Button icon='close' onClick={this.clearSearch} />
+                  <Button icon='close' style={{ marginRight: 8 }}onClick={this.clearSearch} />
                 </Tooltip>
               </Form.Item>
-              {!this.state.ro ? (
-                <Form.Item>
-                  <Tooltip placement='bottom' title={'Incluir novo registro'}>
-                    <Button
-                      type='primary'
-                      icon='plus'
-                      onClick={() => this.handleClick('+')}
-                    >
-                      Incluir
-                    </Button>
-                  </Tooltip>
-                </Form.Item>
-              ) : null}
-            </Form>
+            </>
+            )}
+            {!this.state.ro ? (
+              <Form.Item>
+                <Tooltip placement='bottom' title={'Incluir novo registro'}>
+                  <Button
+                    type='primary'
+                    icon='plus'
+                    onClick={() => this.handleClick('+')}
+                  >
+                    Incluir
+                  </Button>
+                </Tooltip>
+              </Form.Item>
+            ) : null}
           </div>
           <Table
             columns={this.props.table}
             dataSource={this.state.data}
-            rowKey={record => record[this.props.key1]}
+            rowKey={record => record[this.props.subkey]}
             size='middle'
             bordered
             pagination={pagina}
             onRow={record => {
               return {
                 onClick: () => {
-                  this.handleClick(record[this.props.key1])
+                  this.handleClick(record[this.props.subkey])
                 }
               }
             }}
