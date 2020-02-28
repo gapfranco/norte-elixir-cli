@@ -42,7 +42,7 @@ class ListItems extends React.Component {
             dataIndex: 'name'
           },
           {
-            title: 'Frequencia',
+            title: 'Frequência',
             dataIndex: 'freq'
           },
           {

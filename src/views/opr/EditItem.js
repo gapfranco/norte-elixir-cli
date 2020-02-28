@@ -244,8 +244,8 @@ class EditItem extends React.Component {
                 <Tabs.TabPane
                   tab={
                     <span>
-                      <Icon type='menu' />
-                      Mapeamento
+                      <Icon type='share-alt' />
+                      Distribuição
                     </span>
                   }
                   key='2'
@@ -257,7 +257,7 @@ class EditItem extends React.Component {
                     subkey='id'
                     search={false}
                     title={'Unidades e responsáveis'}
-                    detail='mapping'
+                    detail={`mappings/${this.state.id}`}
                     base='mappings'
                     table={[
                       {

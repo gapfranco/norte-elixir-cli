@@ -4,7 +4,6 @@ import { getAuthHeader } from './authApi'
 
 export function listMappings (itemKey, page = 0, limit = 0, filter = null) {
   const q = filter ? `, filter: {matching: "${filter}"}` : ''
-  console.log(q)
   const gql = `
   query {
     mappings(itemKey: "${itemKey}" page: ${page}, limit: ${limit} ${q} ) {
