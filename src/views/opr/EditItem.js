@@ -30,15 +30,16 @@ class EditItem extends React.Component {
       loaded: false,
       isLoading: false,
       user: null,
-      open: false
+      open: false,
+      tab: '1'
     }
   }
 
-  async componentDidMount () {
+  componentDidMount () {
     const id = this.props.match.params.id
     if (id === '+') {
       this.setState({
-        data: { key: '', name: '', period: '', base: '' },
+        data: { key: '', name: '', freq: null, base: null },
         loaded: true,
         id: id
       })
@@ -100,19 +101,23 @@ class EditItem extends React.Component {
   }
 
   verifyId = (rule, value, callback) => {
-    if (value && this.props.match.params.id === '+' && !value.match(/^[a-z0-9](\.?[a-z0-9])*$/)) {
-      callback(new Error('Só deve conter letras minúsculas, numeros e pontos (.)'))
+    if (value && this.props.match.params.id === '+' && !value.match(/^[a-zA-Z0-9](\.?[a-zA-Z0-9])*$/)) {
+      callback(new Error('Só deve conter letras, numeros e pontos (.)'))
     } else {
       callback()
     }
   }
 
   handlePeriod = value => {
-    this.setState({ data: { ...this.state.data, period: value } }, () => console.log(this.state.data))
+    this.setState({ data: { ...this.state.data, freq: value } }, () => console.log(this.state.data))
   }
 
   handleBase = value => {
     this.setState({ data: { ...this.state.data, base: value.format(dateFormat) } }, () => console.log(this.state.data))
+  }
+
+  setTab = tab => {
+    this.setState({ tab })
   }
 
   render () {
@@ -121,30 +126,32 @@ class EditItem extends React.Component {
       return null
     }
     let actions = []
-    actions.push(
-      <Button type='primary' onClick={this.validSubmit} loading={this.state.isLoading}>
-        Gravar
-      </Button>
-    )
-    if (this.state.id !== '+') {
+    if (this.state.tab === '1') {
       actions.push(
-        <Popconfirm
-          placement='top'
-          title={'Confirme a exclusão'}
-          onConfirm={this.submitDelete}
-          okText='Sim'
-          cancelText='Não'
-        >
-          <Button type='danger'>Excluir</Button>
-        </Popconfirm>
+        <Button type='primary' onClick={this.validSubmit} loading={this.state.isLoading}>
+          Gravar
+        </Button>
       )
+      if (this.state.id !== '+') {
+        actions.push(
+          <Popconfirm
+            placement='top'
+            title={'Confirme a exclusão'}
+            onConfirm={this.submitDelete}
+            okText='Sim'
+            cancelText='Não'
+          >
+            <Button type='danger'>Excluir</Button>
+          </Popconfirm>
+        )
+      }
+      actions.push(<Button onClick={() => this.props.history.goBack()}>Voltar</Button>)
     }
-    actions.push(<Button onClick={() => this.props.history.goBack()}>Voltar</Button>)
 
     return (
       <Row type='flex' justify='start' align='middle' >
         <Card
-          title='Item'
+          title='Item de conformidade'
           className='card_data'
           style={{ width: '100%' }}
           actions={actions}
@@ -180,7 +187,7 @@ class EditItem extends React.Component {
               })(<Input placeholder='Nome' />)}
             </Form.Item>
 
-            <Tabs defaultActiveKey='1'>
+            <Tabs defaultActiveKey='1' onChange={this.setTab}>
               <Tabs.TabPane
                 tab={
                   <span>
@@ -192,14 +199,14 @@ class EditItem extends React.Component {
               >
 
                 <Form.Item label={'Periodicidade'}>
-                  {getFieldDecorator('period', {
+                  {getFieldDecorator('freq', {
                     rules: [
                       {
                         required: false,
                         message: 'Informe a periodicidade'
                       }
                     ],
-                    initialValue: this.state.data.period
+                    initialValue: this.state.data.freq
                   })(
                     <Select
                       onChange={this.handlePeriod}
@@ -222,7 +229,7 @@ class EditItem extends React.Component {
                         message: 'Informe a data base'
                       }
                     ],
-                    initialValue: this.state.data.base ? moment(this.state.data.base, dateFormat) : ''
+                    initialValue: this.state.data.base ? moment(this.state.data.base, dateFormat) : null
                   })(
                     <DatePicker
                       format={'DD/MM/YYYY'}

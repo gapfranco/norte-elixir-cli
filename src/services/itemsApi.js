@@ -12,6 +12,8 @@ export function listItems (page = 0, limit = 0, filter = null) {
       list {
         key
         name
+        freq
+        base
       }
     }
   }
@@ -26,7 +28,7 @@ export function showItem (key) {
   const gql = `
   query {
     item(key: "${key}") {
-      id key name period base
+      id key name freq base
     }
   }
   `
@@ -39,10 +41,10 @@ export function showItem (key) {
 export function updateItem (item) {
   let per = ''
   let bas = ''
-  if (item.period) {
-    per = `, period: ${item.period.toUpperCase()}`
-  } else if (item.period === '') {
-    per = `, period: null`
+  if (item.freq) {
+    per = `, freq: ${item.freq.toUpperCase()}`
+  } else if (item.freq === '') {
+    per = `, freq: null`
   }
   if (item.base) {
     bas = `, base: "${item.base.format('YYYY-MM-DD')}"`
@@ -56,7 +58,6 @@ export function updateItem (item) {
     }
   }
   `
-  console.log(gql)
   const body = {
     query: gql
   }
@@ -68,9 +69,21 @@ export function updateItem (item) {
 }
 
 export function createItem (item) {
+  let per = ''
+  let bas = ''
+  if (item.freq) {
+    per = `, freq: ${item.freq.toUpperCase()}`
+  } else if (item.freq === '') {
+    per = `, freq: null`
+  }
+  if (item.base) {
+    bas = `, base: "${item.base.format('YYYY-MM-DD')}"`
+  } else if (item.base === '') {
+    bas = `, base: null`
+  }
   const gql = `
   mutation {
-    itemCreate(key: "${item.key}", name: "${item.name}") {
+    itemCreate(key: "${item.key}", name: "${item.name}" ${per} ${bas}) {
       key 
     }
   }

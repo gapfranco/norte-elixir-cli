@@ -23,7 +23,7 @@ class ListItems extends React.Component {
     }
     return (
       <ListGeneric
-        title='Itens'
+        title='Itens de conformidade'
         detail='/item'
         id='key'
         base='items'
@@ -40,6 +40,14 @@ class ListItems extends React.Component {
           {
             title: 'Nome',
             dataIndex: 'name'
+          },
+          {
+            title: 'Frequencia',
+            dataIndex: 'freq'
+          },
+          {
+            title: 'Data base',
+            dataIndex: 'base'
           }
         ]}
       />
