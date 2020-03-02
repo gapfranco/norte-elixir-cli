@@ -28,11 +28,17 @@ export function listMappings (itemKey, page = 0, limit = 0, filter = null) {
   return axios.post(`${apiUrl}`, body, getAuthHeader())
 }
 
-export function showItem (key) {
+export function showMapping (id) {
   const gql = `
   query {
-    mapping(key: "${key}") {
-      id key name
+      mapping(id: ${id}) {
+      id 
+      unit {
+        key name
+      } 
+      user {
+        uid username
+      }
     }
   }
   `
@@ -42,13 +48,17 @@ export function showItem (key) {
   return axios.post(`${apiUrl}`, body, getAuthHeader())
 }
 
-export function updateItem (mapping) {
+export function updateMapping (mapping) {
   const gql = `
-  mutation {
-    mappingUpdate(key: "${mapping.key}", name: "${mapping.name}") {
-      key 
+    mutation {
+      mappingUpdate(
+        itemKey: "${mapping.item_key}", 
+        unitKey: "${mapping.unit_key}", 
+        userKey: "${mapping.user_key}"
+      ) {
+        id
+      }
     }
-  }
   `
   const body = {
     query: gql
@@ -60,13 +70,19 @@ export function updateItem (mapping) {
   })
 }
 
-export function createItem (mapping) {
+export function createMapping (mapping) {
+  console.log('CRIANDO', mapping)
+
   const gql = `
-  mutation {
-    mappingCreate(key: "${mapping.key}", name: "${mapping.name}") {
-      key 
+    mutation {
+      mappingCreate(
+        itemKey: "${mapping.item_key}", 
+        unitKey: "${mapping.unit_key}", 
+        userKey: "${mapping.user_key}"
+      ) {
+        id
+      }
     }
-  }
   `
   const body = {
     query: gql
@@ -78,13 +94,16 @@ export function createItem (mapping) {
   })
 }
 
-export function deleteItem (id) {
+export function deleteMapping (mapping) {
   const gql = `
-  mutation {
-    mappingDelete(key: "${id}") {
-      key 
+    mutation {
+      mappingDelete(
+        itemKey: "${mapping.item_key}", 
+        unitKey: "${mapping.unit_key}" 
+      ) {
+        id
+      }
     }
-  }
   `
   const body = {
     query: gql

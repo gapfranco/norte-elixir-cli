@@ -257,7 +257,7 @@ class EditItem extends React.Component {
                     subkey='id'
                     search={false}
                     title={'Unidades e responsáveis'}
-                    detail={`mappings/${this.state.id}`}
+                    detail={`mapping/${this.state.id}`}
                     base='mappings'
                     table={[
                       {
