@@ -43,7 +43,14 @@ class EditItem extends React.Component {
     const id = this.props.match.params.id
     if (id === '+') {
       this.setState({
-        data: { key: '', name: '', freq: null, base: null, area_key: '', risk_key: '', process_key: '' },
+        data: { key: '',
+          name: '',
+          text: 'Confirme que item está conforme. Se necessário, inclua observações adicionais ou justificativas.',
+          freq: null,
+          base: null,
+          area_key: '',
+          risk_key: '',
+          process_key: '' },
         id: id
       })
     } else {
@@ -55,7 +62,7 @@ class EditItem extends React.Component {
               name: res.data.data.item.name,
               text: res.data.data.item.text,
               base: res.data.data.item.base,
-              freq: res.data.data.item.freg,
+              freq: res.data.data.item.freq,
               area_key: res.data.data.item.area ? res.data.data.item.area.key : '',
               risk_key: res.data.data.item.risk ? res.data.data.item.risk.key : '',
               process_key: res.data.data.item.process ? res.data.data.item.process.key : ''
@@ -221,6 +228,21 @@ class EditItem extends React.Component {
                 ],
                 initialValue: this.state.data.name
               })(<Input placeholder='Nome' />)}
+            </Form.Item>
+            <Form.Item label={'Texto de verificação'}>
+              {getFieldDecorator('text', {
+                rules: [
+                  {
+                    required: true,
+                    message: 'Informe o texto de conformidade'
+                  }
+                ],
+                initialValue: this.state.data.text
+              })(
+                <Input
+                  placeholder='Texto para verificação de conformidade'
+                />
+              )}
             </Form.Item>
 
             <Tabs defaultActiveKey='1' onChange={this.setTab}>
