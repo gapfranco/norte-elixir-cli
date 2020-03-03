@@ -8,6 +8,10 @@ import SubListGeneric from '~/src/components/SubListGeneric'
 
 import { showItem, updateItem, createItem, deleteItem } from '~/src/services/itemsApi'
 import { listMappings } from '~/src/services/mappingsApi'
+import { listAreas } from '~/src/services/areasApi'
+import { listRisks } from '~/src/services/risksApi'
+import { listProcesses } from '~/src/services/processesApi'
+
 import { errorAlert } from '~/src/services/utils'
 
 const moment = require('moment')
@@ -39,16 +43,23 @@ class EditItem extends React.Component {
     const id = this.props.match.params.id
     if (id === '+') {
       this.setState({
-        data: { key: '', name: '', freq: null, base: null },
-        loaded: true,
+        data: { key: '', name: '', freq: null, base: null, area_key: '', risk_key: '', process_key: '' },
         id: id
       })
     } else {
       showItem(id)
         .then(res => {
           this.setState({
-            data: res.data.data.item,
-            loaded: true,
+            data: {
+              key: res.data.data.item.key,
+              name: res.data.data.item.name,
+              text: res.data.data.item.text,
+              base: res.data.data.item.base,
+              freq: res.data.data.item.freg,
+              area_key: res.data.data.item.area ? res.data.data.item.area.key : '',
+              risk_key: res.data.data.item.risk ? res.data.data.item.risk.key : '',
+              process_key: res.data.data.item.process ? res.data.data.item.process.key : ''
+            },
             id
           })
         })
@@ -57,6 +68,19 @@ class EditItem extends React.Component {
           this.setState({ loaded: true })
         })
     }
+    this.getOptions()
+  }
+
+  getOptions = async () => {
+    const res1 = await listAreas(1, 1000)
+    const res2 = await listRisks(1, 1000)
+    const res3 = await listProcesses(1, 1000)
+    this.setState({
+      areas: res1.data.data.areas.list,
+      risks: res2.data.data.risks.list,
+      processes: res3.data.data.processes.list,
+      loaded: true
+    })
   }
 
   validSubmit = e => {
@@ -120,13 +144,25 @@ class EditItem extends React.Component {
     this.setState({ tab })
   }
 
+  handleArea = value => {
+    this.setState({ data: { ...this.state.data, area_key: value } }, () => console.log(this.state.data))
+  }
+
+  handleRisk = value => {
+    this.setState({ data: { ...this.state.data, risk_key: value } }, () => console.log(this.state.data))
+  }
+
+  handleProcess = value => {
+    this.setState({ data: { ...this.state.data, process_key: value } }, () => console.log(this.state.data))
+  }
+
   render () {
     const { getFieldDecorator } = this.props.form
     if (!this.state.loaded) {
       return null
     }
     let actions = []
-    if (this.state.tab === '1') {
+    if (this.state.tab !== '9') {
       actions.push(
         <Button type='primary' onClick={this.validSubmit} loading={this.state.isLoading}>
           Gravar
@@ -188,6 +224,90 @@ class EditItem extends React.Component {
             </Form.Item>
 
             <Tabs defaultActiveKey='1' onChange={this.setTab}>
+
+              <Tabs.TabPane
+                tab={
+                  <span>
+                    <Icon type='block' />
+                    Ligações
+                  </span>
+                }
+                key='1'
+              >
+                <Form.Item label={'Área'}>
+                  {getFieldDecorator('area_key', {
+                    rules: [
+                      {
+                        required: false,
+                        message: 'Escolha a área relacionada (opcional)'
+                      }
+                    ],
+                    initialValue: this.state.data.area_key
+                  })(
+                    <Select
+                      onChange={this.handleArea}
+                      style={{ width: 200 }}
+                    >
+                      <Select.Option value={''}>Nenhuma</Select.Option>
+                      {this.state.areas.map(item => (
+                        <Select.Option key={item.key} value={item.key}>
+                          {item.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  )}
+                </Form.Item>
+
+                <Form.Item label={'Processo'}>
+                  {getFieldDecorator('process_key', {
+                    rules: [
+                      {
+                        required: false,
+                        message: 'Escolha um processo relacionado (opcional)'
+                      }
+                    ],
+                    initialValue: this.state.data.process_key
+                  })(
+                    <Select
+                      onChange={this.handleProcess}
+                      style={{ width: 200 }}
+                    >
+                      <Select.Option value={''}>Nenhum</Select.Option>
+                      {this.state.processes.map(item => (
+                        <Select.Option key={item.key} value={item.key}>
+                          {item.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  )}
+                </Form.Item>
+
+                <Form.Item label={'Risco'}>
+                  {getFieldDecorator('risk_key', {
+                    rules: [
+                      {
+                        required: false,
+                        message: 'Escolha um risco relacionado (opcional)'
+                      }
+                    ],
+                    initialValue: this.state.data.risk_key
+                  })(
+                    <Select
+                      onChange={this.handleRisk}
+                      style={{ width: 200 }}
+                    >
+                      <Select.Option value={''}>Nenhum</Select.Option>
+                      {this.state.risks.map(item => (
+                        <Select.Option key={item.key} value={item.key}>
+                          {item.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  )}
+                </Form.Item>
+
+              </Tabs.TabPane>
+
               <Tabs.TabPane
                 tab={
                   <span>
@@ -195,7 +315,7 @@ class EditItem extends React.Component {
                     Programação
                   </span>
                 }
-                key='1'
+                key='2'
               >
 
                 <Form.Item label={'Periodicidade'}>
@@ -248,7 +368,7 @@ class EditItem extends React.Component {
                       Distribuição
                     </span>
                   }
-                  key='2'
+                  key='9'
                 >
                   <SubListGeneric
                     list={listMappings}

@@ -28,7 +28,10 @@ export function showItem (key) {
   const gql = `
   query {
     item(key: "${key}") {
-      id key name freq base
+      id key name text freq base 
+      area { key name }
+      process { key name }
+      risk { key name }
     }
   }
   `
@@ -41,6 +44,9 @@ export function showItem (key) {
 export function updateItem (item) {
   let per = ''
   let bas = ''
+  let are = ''
+  let pro = ''
+  let ris = ''
   if (item.freq) {
     per = `, freq: ${item.freq.toUpperCase()}`
   } else if (item.freq === '') {
@@ -51,9 +57,24 @@ export function updateItem (item) {
   } else if (item.base === '') {
     bas = `, base: null`
   }
+  if (item.area_key) {
+    are = `, areaKey: "${item.area_key}"`
+  } else if (item.area_key === '') {
+    are = `, areaKey: null`
+  }
+  if (item.risk_key) {
+    ris = `, riskKey: "${item.risk_key}"`
+  } else if (item.risk_key === '') {
+    ris = `, riskKey: null`
+  }
+  if (item.process_key) {
+    pro = `, processKey: "${item.process_key}"`
+  } else if (item.process_key === '') {
+    pro = `, processKey: null`
+  }
   const gql = `
   mutation {
-    itemUpdate(key: "${item.key}", name: "${item.name}" ${per} ${bas}) {
+    itemUpdate(key: "${item.key}", name: "${item.name}" text: "${item.text}" ${per} ${bas} ${are} ${ris} ${pro}) {
       key 
     }
   }
@@ -71,6 +92,9 @@ export function updateItem (item) {
 export function createItem (item) {
   let per = ''
   let bas = ''
+  let are = ''
+  let pro = ''
+  let ris = ''
   if (item.freq) {
     per = `, freq: ${item.freq.toUpperCase()}`
   } else if (item.freq === '') {
@@ -81,9 +105,24 @@ export function createItem (item) {
   } else if (item.base === '') {
     bas = `, base: null`
   }
+  if (item.area_key) {
+    are = `, areaKey: "${item.area_key}"`
+  } else if (item.area_key === '') {
+    are = `, areaKey: null`
+  }
+  if (item.risk_key) {
+    ris = `, riskKey: "${item.risk_key}"`
+  } else if (item.risk_key === '') {
+    ris = `, riskKey: null`
+  }
+  if (item.process_key) {
+    pro = `, processKey: "${item.process_key}"`
+  } else if (item.process_key === '') {
+    pro = `, processKey: null`
+  }
   const gql = `
   mutation {
-    itemCreate(key: "${item.key}", name: "${item.name}" ${per} ${bas}) {
+    itemCreate(key: "${item.key}", name: "${item.name}" text: "${item.text}" ${per} ${bas} ${are} ${ris} ${pro}) {
       key 
     }
   }
