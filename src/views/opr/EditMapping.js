@@ -155,7 +155,7 @@ class EditMapping extends React.Component {
               {getFieldDecorator('unit_key', {
                 rules: [
                   {
-                    required: false,
+                    required: true,
                     message: 'Escolha a unidade'
                   }
                 ],
@@ -178,7 +178,7 @@ class EditMapping extends React.Component {
               {getFieldDecorator('user_key', {
                 rules: [
                   {
-                    required: false,
+                    required: true,
                     message: 'Escolha o usuário responsável'
                   }
                 ],
