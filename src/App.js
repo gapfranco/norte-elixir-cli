@@ -27,6 +27,8 @@ import ListItems from './views/opr/ListItems'
 import EditItem from './views/opr/EditItem'
 import EditMapping from './views/opr/EditMapping'
 
+import ListRatings from './views/opr/ListRatings'
+
 const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
@@ -64,6 +66,7 @@ class App extends Component {
         <PrivateRoute exact path='/items' component={ListItems} />
         <PrivateRoute path='/item/:id' component={EditItem} />
         <PrivateRoute path='/mapping/:key/:id' component={EditMapping} />
+        <PrivateRoute exact path='/ratings' component={ListRatings} />
       </div>
     )
   }

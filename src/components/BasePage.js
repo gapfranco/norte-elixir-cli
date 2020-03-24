@@ -137,15 +137,15 @@ class BasePage extends React.Component {
                   Itens
                 </Menu.Item>
 
-                <Menu.Item key='tests' onClick={() => this.handleLink('/')}>
+                <Menu.Item key='tests' onClick={() => this.handleLink('/ratings')}>
                   <Icon type='sync' />
                   Testes
                 </Menu.Item>
 
-                <Menu.Item key='quest' onClick={() => this.handleLink('/')}>
+                {/* <Menu.Item key='quest' onClick={() => this.handleLink('/')}>
                   <Icon type='question' />
                   Questionários
-                </Menu.Item>
+                </Menu.Item> */}
 
               </SubMenu>
 
