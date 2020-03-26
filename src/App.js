@@ -1,79 +1,81 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react';
 
-import { Route, Redirect, withRouter } from 'react-router-dom'
-import { connect } from 'react-redux'
+import {Route, Redirect, withRouter} from 'react-router-dom';
+import {connect} from 'react-redux';
 
-import { isAuthenticated } from './services/authApi'
-import MainPage from './views/MainPage'
-import SignIn from './views/auth/SignIn'
-import SignUp from './views/auth/SignUp'
-import ChangePassword from './views/auth/ChangePassword'
-import ForgotPassword from './views/auth/ForgotPassword'
-import NewPassword from './views/auth/NewPassword'
-import Account from './views/auth/Account'
-import ListUsers from './views/adm/ListUsers'
-import EditUser from './views/adm/EditUser'
+import {isAuthenticated} from './services/authApi';
+import MainPage from './views/MainPage';
+import SignIn from './views/auth/SignIn';
+import SignUp from './views/auth/SignUp';
+import ChangePassword from './views/auth/ChangePassword';
+import ForgotPassword from './views/auth/ForgotPassword';
+import NewPassword from './views/auth/NewPassword';
+import Account from './views/auth/Account';
+import ListUsers from './views/adm/ListUsers';
+import EditUser from './views/adm/EditUser';
 
-import ListUnits from './views/cad/ListUnits'
-import EditUnit from './views/cad/EditUnit'
-import ListAreas from './views/cad/ListAreas'
-import EditArea from './views/cad/EditArea'
-import ListProcesses from './views/cad/ListProcesses'
-import EditProcess from './views/cad/EditProcess'
-import ListRisks from './views/cad/ListRisks'
-import EditRisk from './views/cad/EditRisk'
+import ListUnits from './views/cad/ListUnits';
+import EditUnit from './views/cad/EditUnit';
+import ListAreas from './views/cad/ListAreas';
+import EditArea from './views/cad/EditArea';
+import ListProcesses from './views/cad/ListProcesses';
+import EditProcess from './views/cad/EditProcess';
+import ListRisks from './views/cad/ListRisks';
+import EditRisk from './views/cad/EditRisk';
 
-import ListItems from './views/opr/ListItems'
-import EditItem from './views/opr/EditItem'
-import EditMapping from './views/opr/EditMapping'
+import ListItems from './views/opr/ListItems';
+import EditItem from './views/opr/EditItem';
+import EditMapping from './views/opr/EditMapping';
 
-import ListRatings from './views/opr/ListRatings'
+import ListRatings from './views/opr/ListRatings';
+import EditRating from './views/opr/EditRating';
 
-const PrivateRoute = ({ component: Component, ...rest }) => (
+const PrivateRoute = ({component: Component, ...rest}) => (
   <Route
     {...rest}
     render={props => {
       if (!isAuthenticated()) {
-        return <Redirect to='/signin' />
+        return <Redirect to="/signin" />;
       } else {
-        return <Component {...props} />
+        return <Component {...props} />;
       }
     }}
   />
-)
+);
 
 class App extends Component {
-  render () {
+  render() {
     return (
       <div>
-        <PrivateRoute exact path='/' component={MainPage} />
-        <Route exact path='/signin' component={SignIn} />
-        <Route exact path='/signup' component={SignUp} />
-        <Route exact path='/forgotpassword' component={ForgotPassword} />
-        <Route exact path='/newpassword' component={NewPassword} />
-        <PrivateRoute exact path='/account' component={Account} />
-        <PrivateRoute exact path='/changepassword' component={ChangePassword} />
-        <PrivateRoute exact path='/users' component={ListUsers} />
-        <PrivateRoute path='/user/:id' component={EditUser} />
-        <PrivateRoute exact path='/units' component={ListUnits} />
-        <PrivateRoute path='/unit/:id' component={EditUnit} />
-        <PrivateRoute exact path='/areas' component={ListAreas} />
-        <PrivateRoute path='/area/:id' component={EditArea} />
-        <PrivateRoute exact path='/processes' component={ListProcesses} />
-        <PrivateRoute path='/process/:id' component={EditProcess} />
-        <PrivateRoute exact path='/risks' component={ListRisks} />
-        <PrivateRoute path='/risk/:id' component={EditRisk} />
-        <PrivateRoute exact path='/items' component={ListItems} />
-        <PrivateRoute path='/item/:id' component={EditItem} />
-        <PrivateRoute path='/mapping/:key/:id' component={EditMapping} />
-        <PrivateRoute exact path='/ratings' component={ListRatings} />
+        <PrivateRoute exact path="/" component={MainPage} />
+        <Route exact path="/signin" component={SignIn} />
+        <Route exact path="/signup" component={SignUp} />
+        <Route exact path="/forgotpassword" component={ForgotPassword} />
+        <Route exact path="/newpassword" component={NewPassword} />
+        <PrivateRoute exact path="/account" component={Account} />
+        <PrivateRoute exact path="/changepassword" component={ChangePassword} />
+        <PrivateRoute exact path="/users" component={ListUsers} />
+        <PrivateRoute path="/user/:id" component={EditUser} />
+        <PrivateRoute exact path="/units" component={ListUnits} />
+        <PrivateRoute path="/unit/:id" component={EditUnit} />
+        <PrivateRoute exact path="/areas" component={ListAreas} />
+        <PrivateRoute path="/area/:id" component={EditArea} />
+        <PrivateRoute exact path="/processes" component={ListProcesses} />
+        <PrivateRoute path="/process/:id" component={EditProcess} />
+        <PrivateRoute exact path="/risks" component={ListRisks} />
+        <PrivateRoute path="/risk/:id" component={EditRisk} />
+        <PrivateRoute exact path="/items" component={ListItems} />
+        <PrivateRoute path="/item/:id" component={EditItem} />
+        <PrivateRoute path="/mapping/:key/:id" component={EditMapping} />
+        <PrivateRoute exact path="/ratings" component={ListRatings} />
+        <PrivateRoute path="/rating/:id" component={EditRating} />
       </div>
-    )
+    );
   }
 }
 
 const mapStateToProps = state => ({
-  ...state
-})
+  ...state,
+});
 
-export default withRouter(connect(mapStateToProps)(App))
+export default withRouter(connect(mapStateToProps)(App));

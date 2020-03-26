@@ -1,10 +1,10 @@
-import axios from 'axios'
-import { apiUrl } from '~/src/config/apiConfig'
-import { getAuthHeader } from './authApi'
-const moment = require('moment')
+import axios from 'axios';
+import {apiUrl} from '~/src/config/apiConfig';
+import {getAuthHeader} from './authApi';
+const moment = require('moment');
 
-export function listRatings (page = 0, limit = 0, filter = null) {
-  const q = filter ? `, filter: {matching: "${filter}"}` : ''
+export function listRatings(page = 0, limit = 0, filter = null) {
+  const q = filter ? `, filter: {matching: "${filter}"}` : '';
 
   const gql = `
   query {
@@ -16,67 +16,72 @@ export function listRatings (page = 0, limit = 0, filter = null) {
         dateOk
         result
         item {
-          key name
+          key name text
         }
       }
     }
   }
-  `
+  `;
   const body = {
-    query: gql
-  }
-  return axios.post(`${apiUrl}`, body, getAuthHeader())
+    query: gql,
+  };
+  return axios.post(`${apiUrl}`, body, getAuthHeader());
 }
 
-export function showRating (id) {
+export function showRating(id) {
   const gql = `
   query {
     rating(id: ${id}) {
-      dateDue dateOk 
+      id dateDue dateOk result notes
       unit {key name}
-      item { key name }
+      item { key name text }
       area { key name }
       process { key name }
       risk { key name }
     }
   }
-  `
+  `;
   const body = {
-    query: gql
-  }
-  return axios.post(`${apiUrl}`, body, getAuthHeader())
+    query: gql,
+  };
+  return axios.post(`${apiUrl}`, body, getAuthHeader());
 }
 
-export function updateRating (rating) {
-  let dateOk = moment().format('YYYY-MM-DD')
+export function updateRating(rating) {
+  // let dateOk = moment().format('YYYY-MM-DD');
 
   const gql = `
-  mutation {
-    ratingUpdate(id: ${rating.id}, date_ok: "${dateOk}" notes: "${rating.notes}" result: ${rating.result}) {
-      key 
+  mutation($notes: String) {
+    ratingUpdate(id: ${
+      rating.id
+    } notes: $notes result: ${rating.result.toUpperCase()}) {
+      id 
     }
   }
-  `
+  `;
   const body = {
-    query: gql
-  }
-  return axios.post(`${apiUrl}`, body, getAuthHeader()).then(({ data }) => {
+    query: gql,
+    variables: {
+      notes: rating.notes,
+    },
+  };
+  return axios.post(`${apiUrl}`, body, getAuthHeader()).then(({data}) => {
     if (data.errors) {
-      throw data.errors[0].message
+      throw data.errors[0].message;
     }
-  })
+  });
 }
 
-export function deleteRating (id) {
+export function deleteRating(id) {
   const gql = `
   mutation {
     ratingDelete(id: "${id}") {
       id 
     }
   }
-  `
+  `;
   const body = {
-    query: gql
-  }
-  return axios.post(`${apiUrl}`, body, getAuthHeader())
+    query: gql,
+  };
+  return axios.post(`${apiUrl}`, body, getAuthHeader());
 }
