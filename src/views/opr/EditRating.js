@@ -137,7 +137,10 @@ class EditRating extends React.Component {
               })(
                 <Select
                   onChange={this.handleResult}
-                  style={{width: 200}}
+                  style={{
+                    width: 200,
+                    color: '#000',
+                  }}
                   disabled={this.state.data.dateOk !== null}>
                   <Select.Option value={''}>-----</Select.Option>
                   {this.state.results.map(item => (
@@ -165,6 +168,7 @@ class EditRating extends React.Component {
                   placeholder="Notas sobre a resposta"
                   disabled={this.state.data.dateOk}
                   rows={6}
+                  style={{color: '#000'}}
                 />,
               )}
             </Form.Item>

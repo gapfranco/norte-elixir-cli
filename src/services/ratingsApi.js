@@ -85,3 +85,45 @@ export function deleteRating(id) {
   };
   return axios.post(`${apiUrl}`, body, getAuthHeader());
 }
+
+export function listAllRatings(page = 0, limit = 0, filter = null) {
+  const q = filter ? `, filter: {matching: "${filter}"}` : '';
+  const gql = `
+  query {
+    ratingsAll(page: ${page}, limit: ${limit} ${q} ) {
+      count hasNext hasPrev nextPage prevPage page
+      list {
+        id
+        dateDue
+        dateOk
+        result
+        itemKey
+        unitKey
+        uid
+        item {
+          key name text
+        }
+        unit {
+          id key name
+        }
+        user {
+          email username
+        }
+        area {
+          key name
+        }
+        process {
+          key name
+        }
+        risk {
+          key name
+        }
+      }
+    }
+  }
+  `;
+  const body = {
+    query: gql,
+  };
+  return axios.post(`${apiUrl}`, body, getAuthHeader());
+}

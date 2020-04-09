@@ -30,10 +30,12 @@ import EditMapping from './views/opr/EditMapping';
 import ListRatings from './views/opr/ListRatings';
 import EditRating from './views/opr/EditRating';
 
+import ListResults from './views/res/ListResults';
+
 const PrivateRoute = ({component: Component, ...rest}) => (
   <Route
     {...rest}
-    render={props => {
+    render={(props) => {
       if (!isAuthenticated()) {
         return <Redirect to="/signin" />;
       } else {
@@ -69,12 +71,13 @@ class App extends Component {
         <PrivateRoute path="/mapping/:key/:id" component={EditMapping} />
         <PrivateRoute exact path="/ratings" component={ListRatings} />
         <PrivateRoute path="/rating/:id" component={EditRating} />
+        <PrivateRoute exact path="/results" component={ListResults} />
       </div>
     );
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   ...state,
 });
 
