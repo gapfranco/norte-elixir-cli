@@ -22,7 +22,6 @@ export function listRatings(page = 0, limit = 0, filter = null) {
   const body = {
     query: gql,
   };
-  console.log(body);
   return axios.post(`${apiUrl}`, body, getAuthHeader());
 }
 

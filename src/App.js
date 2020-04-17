@@ -32,6 +32,7 @@ import EditRating from './views/opr/EditRating';
 
 import ListResults from './views/res/ListResults';
 import ListEvents from './views/res/ListEvents';
+import ViewEvent from './views/res/ViewEvent';
 
 const PrivateRoute = ({component: Component, ...rest}) => (
   <Route
@@ -74,6 +75,7 @@ class App extends Component {
         <PrivateRoute path="/rating/:id" component={EditRating} />
         <PrivateRoute exact path="/results" component={ListResults} />
         <PrivateRoute exact path="/events" component={ListEvents} />
+        <PrivateRoute path="/event/:id" component={ViewEvent} />
       </div>
     );
   }

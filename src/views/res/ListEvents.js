@@ -35,8 +35,12 @@ class ListEvents extends React.Component {
         prompt={'Buscar por Unidade ou Usuário'}
         table={[
           {
+            title: 'Nome',
+            dataIndex: 'itemName',
+          },
+          {
             title: 'Unidade',
-            // width: 100,
+            width: 120,
             // fixed: 'left',
             dataIndex: 'unitKey',
           },
@@ -61,14 +65,29 @@ class ListEvents extends React.Component {
           },
           {
             title: 'Risco',
+            width: 120,
+            dataIndex: 'riskKey',
+          },
+          {
+            title: 'Nome risco',
             dataIndex: 'riskName',
           },
           {
             title: 'Área',
+            width: 120,
+            dataIndex: 'areaKey',
+          },
+          {
+            title: 'Nome da Área',
             dataIndex: 'areaName',
           },
           {
             title: 'Processo',
+            width: 120,
+            dataIndex: 'processKey',
+          },
+          {
+            title: 'Nome Processo',
             dataIndex: 'processName',
           },
         ]}

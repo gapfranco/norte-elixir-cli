@@ -33,13 +33,31 @@ export function showEvent(id) {
   const gql = `
   query {
     event(id: ${id}) {
-      id event_date itemName text
+      id eventDate itemName text
       unitKey unitName
       itemKey itemName
       areaKey areaName
       riskKey riskName
+      uid
+      user {
+        username
+      }
       processKey processName
   }
+  }
+  `;
+  const body = {
+    query: gql,
+  };
+  return axios.post(`${apiUrl}`, body, getAuthHeader());
+}
+
+export function createEvent(id) {
+  const gql = `
+  mutation {
+    eventCreate(ratingId: "${id}") {
+      id 
+    }
   }
   `;
   const body = {

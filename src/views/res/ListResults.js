@@ -30,39 +30,29 @@ class ListResults extends React.Component {
         base="ratingsAll"
         list={listAllRatings}
         size={10}
-        scroll={0}
+        scroll={2000}
         width={'100%'}
         ro={this.state.ro}
         prompt={'Buscar por Unidade, Item, resultado ou Usuário'}
         table={[
           {
             title: 'Unidade',
-            // width: 100,
-            // fixed: 'left',
             dataIndex: 'unitKey',
           },
           {
             title: 'Nome Unidade',
-            // width: 180,
-            // fixed: 'left',
             dataIndex: 'unitName',
           },
           {
             title: 'Item',
-            // width: 120,
-            // fixed: 'left',
             dataIndex: 'itemKey',
           },
           {
             title: 'Nome item',
-            // fixed: 'left',
-            // width: 250,
             dataIndex: 'itemName',
           },
           {
             title: 'Resultado',
-            // width: 150,
-            // fixed: 'left',
             dataIndex: 'result',
             render: (text) => (
               <span>
@@ -78,13 +68,11 @@ class ListResults extends React.Component {
           },
           {
             title: 'Data',
-            // width: 140,
             dataIndex: 'dateDue',
             render: (text) => moment(text).format('DD/MM/YYYY'),
           },
           {
             title: 'Respondido',
-            // width: 140,
             dataIndex: 'dateOk',
             render: (text) => (text ? moment(text).format('DD/MM/YYYY') : ''),
           },
@@ -93,8 +81,35 @@ class ListResults extends React.Component {
             dataIndex: 'uid',
           },
           {
-            title: 'Responsável',
+            title: 'Nome do usuário',
             dataIndex: 'user.username',
+          },
+          {
+            title: 'Risco',
+            width: 120,
+            dataIndex: 'riskKey',
+          },
+          {
+            title: 'Nome risco',
+            dataIndex: 'riskName',
+          },
+          {
+            title: 'Área',
+            width: 120,
+            dataIndex: 'areaKey',
+          },
+          {
+            title: 'Nome da Área',
+            dataIndex: 'areaName',
+          },
+          {
+            title: 'Processo',
+            width: 120,
+            dataIndex: 'processKey',
+          },
+          {
+            title: 'Nome Processo',
+            dataIndex: 'processName',
           },
         ]}
       />

@@ -75,7 +75,7 @@ class EditItem extends React.Component {
       });
     } else {
       showItem(id)
-        .then(res => {
+        .then((res) => {
           this.setState({
             data: {
               key: res.data.data.item.key,
@@ -116,7 +116,7 @@ class EditItem extends React.Component {
     });
   };
 
-  validSubmit = e => {
+  validSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
@@ -127,7 +127,7 @@ class EditItem extends React.Component {
               this.setState({isLoading: false});
               this.props.history.goBack();
             })
-            .catch(err => {
+            .catch((err) => {
               this.setState({isLoading: false});
               errorAlert(
                 'Erro',
@@ -141,7 +141,7 @@ class EditItem extends React.Component {
               this.setState({isLoading: false});
               this.props.history.goBack();
             })
-            .catch(err => {
+            .catch((err) => {
               this.setState({isLoading: false});
               errorAlert('Erro', `Erro de gravação (${err})`, 5);
             });
@@ -173,36 +173,36 @@ class EditItem extends React.Component {
     }
   };
 
-  handlePeriod = value => {
+  handlePeriod = (value) => {
     this.setState({data: {...this.state.data, freq: value}}, () =>
       console.log(this.state.data),
     );
   };
 
-  handleBase = value => {
+  handleBase = (value) => {
     this.setState(
       {data: {...this.state.data, base: value.format(dateFormat)}},
       () => console.log(this.state.data),
     );
   };
 
-  setTab = tab => {
+  setTab = (tab) => {
     this.setState({tab});
   };
 
-  handleArea = value => {
+  handleArea = (value) => {
     this.setState({data: {...this.state.data, area_key: value}}, () =>
       console.log(this.state.data),
     );
   };
 
-  handleRisk = value => {
+  handleRisk = (value) => {
     this.setState({data: {...this.state.data, risk_key: value}}, () =>
       console.log(this.state.data),
     );
   };
 
-  handleProcess = value => {
+  handleProcess = (value) => {
     this.setState({data: {...this.state.data, process_key: value}}, () =>
       console.log(this.state.data),
     );
@@ -318,7 +318,7 @@ class EditItem extends React.Component {
                   })(
                     <Select onChange={this.handleArea} style={{width: 200}}>
                       <Select.Option value={''}>Nenhuma</Select.Option>
-                      {this.state.areas.map(item => (
+                      {this.state.areas.map((item) => (
                         <Select.Option key={item.key} value={item.key}>
                           {item.name}
                         </Select.Option>
@@ -339,7 +339,7 @@ class EditItem extends React.Component {
                   })(
                     <Select onChange={this.handleProcess} style={{width: 200}}>
                       <Select.Option value={''}>Nenhum</Select.Option>
-                      {this.state.processes.map(item => (
+                      {this.state.processes.map((item) => (
                         <Select.Option key={item.key} value={item.key}>
                           {item.name}
                         </Select.Option>
@@ -360,7 +360,7 @@ class EditItem extends React.Component {
                   })(
                     <Select onChange={this.handleRisk} style={{width: 200}}>
                       <Select.Option value={''}>Nenhum</Select.Option>
-                      {this.state.risks.map(item => (
+                      {this.state.risks.map((item) => (
                         <Select.Option key={item.key} value={item.key}>
                           {item.name}
                         </Select.Option>
@@ -390,7 +390,7 @@ class EditItem extends React.Component {
                   })(
                     <Select onChange={this.handlePeriod} style={{width: 160}}>
                       <Select.Option value={''}>Nenhuma</Select.Option>
-                      {frequencies.map(item => (
+                      {frequencies.map((item) => (
                         <Select.Option key={item.key} value={item.key}>
                           {item.name}
                         </Select.Option>
@@ -439,18 +439,19 @@ class EditItem extends React.Component {
                     table={[
                       {
                         title: 'Unidade',
-                        width: '30%',
                         dataIndex: 'unit.name',
                       },
                       {
                         title: 'Responsável',
-                        width: '30%',
                         dataIndex: 'user.uid',
                       },
                       {
                         title: 'Nome',
-                        width: '40%',
                         dataIndex: 'user.username',
+                      },
+                      {
+                        title: 'Avisar',
+                        dataIndex: 'alert_user.username',
                       },
                     ]}
                   />
@@ -472,7 +473,7 @@ class EditItemPage extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     ...state,
   };

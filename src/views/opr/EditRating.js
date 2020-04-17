@@ -16,7 +16,7 @@ import {
 import BasePage from '~/src/components/BasePage';
 
 import {showRating, updateRating} from '~/src/services/ratingsApi';
-
+import {createEvent} from '~/src/services/eventsApi';
 import {errorAlert} from '~/src/services/utils';
 
 const {Title} = Typography;
@@ -58,8 +58,15 @@ class EditRating extends React.Component {
         this.setState({isLoading: true});
         updateRating({...values, id: this.state.data.id})
           .then(() => {
-            this.setState({isLoading: false});
-            this.props.history.goBack();
+            if (values.result === 'falhou') {
+              createEvent(this.state.data.id).then(() => {
+                this.setState({isLoading: false});
+                this.props.history.goBack();
+              });
+            } else {
+              this.setState({isLoading: false});
+              this.props.history.goBack();
+            }
           })
           .catch((err) => {
             this.setState({isLoading: false});
