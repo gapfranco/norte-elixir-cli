@@ -1,7 +1,6 @@
 import axios from 'axios';
 import {apiUrl} from '~/src/config/apiConfig';
 import {getAuthHeader} from './authApi';
-const moment = require('moment');
 
 export function listRatings(page = 0, limit = 0, filter = null) {
   const q = filter ? `, filter: {matching: "${filter}"}` : '';
@@ -15,9 +14,7 @@ export function listRatings(page = 0, limit = 0, filter = null) {
         dateDue
         dateOk
         result
-        item {
-          key name text
-        }
+        itemKey itemName
       }
     }
   }
@@ -25,6 +22,7 @@ export function listRatings(page = 0, limit = 0, filter = null) {
   const body = {
     query: gql,
   };
+  console.log(body);
   return axios.post(`${apiUrl}`, body, getAuthHeader());
 }
 
@@ -33,11 +31,15 @@ export function showRating(id) {
   query {
     rating(id: ${id}) {
       id dateDue dateOk result notes
-      unit {key name}
-      item { key name text }
-      area { key name }
-      process { key name }
-      risk { key name }
+      unitKey unitName
+      itemKey itemName itemText
+      areaKey areaName
+      processKey processName
+      riskKey riskName
+      user {
+        email username
+      }
+
     }
   }
   `;
@@ -97,26 +99,14 @@ export function listAllRatings(page = 0, limit = 0, filter = null) {
         dateDue
         dateOk
         result
-        itemKey
-        unitKey
+        itemKey itemName
+        unitKey unitName
+        areaKey areaName
+        riskKey riskName
+        processKey processName
         uid
-        item {
-          key name text
-        }
-        unit {
-          id key name
-        }
         user {
           email username
-        }
-        area {
-          key name
-        }
-        process {
-          key name
-        }
-        risk {
-          key name
         }
       }
     }

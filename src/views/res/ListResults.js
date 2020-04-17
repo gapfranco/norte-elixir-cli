@@ -37,32 +37,32 @@ class ListResults extends React.Component {
         table={[
           {
             title: 'Unidade',
-            width: 100,
-            fixed: 'left',
+            // width: 100,
+            // fixed: 'left',
             dataIndex: 'unitKey',
           },
           {
             title: 'Nome Unidade',
-            width: 180,
-            fixed: 'left',
-            dataIndex: 'unit.name',
+            // width: 180,
+            // fixed: 'left',
+            dataIndex: 'unitName',
           },
           {
             title: 'Item',
-            width: 120,
-            fixed: 'left',
-            dataIndex: 'item.key',
+            // width: 120,
+            // fixed: 'left',
+            dataIndex: 'itemKey',
           },
           {
             title: 'Nome item',
-            fixed: 'left',
-            width: 250,
-            dataIndex: 'item.name',
+            // fixed: 'left',
+            // width: 250,
+            dataIndex: 'itemName',
           },
           {
             title: 'Resultado',
-            width: 150,
-            fixed: 'left',
+            // width: 150,
+            // fixed: 'left',
             dataIndex: 'result',
             render: (text) => (
               <span>
@@ -78,13 +78,13 @@ class ListResults extends React.Component {
           },
           {
             title: 'Data',
-            width: 140,
+            // width: 140,
             dataIndex: 'dateDue',
             render: (text) => moment(text).format('DD/MM/YYYY'),
           },
           {
             title: 'Respondido',
-            width: 140,
+            // width: 140,
             dataIndex: 'dateOk',
             render: (text) => (text ? moment(text).format('DD/MM/YYYY') : ''),
           },

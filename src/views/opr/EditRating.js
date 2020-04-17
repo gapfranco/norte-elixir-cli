@@ -35,7 +35,7 @@ class EditRating extends React.Component {
   componentDidMount() {
     const id = this.props.match.params.id;
     showRating(id)
-      .then(res => {
+      .then((res) => {
         this.setState({
           data: res.data.data.rating,
           results: [
@@ -51,7 +51,7 @@ class EditRating extends React.Component {
       });
   }
 
-  validSubmit = e => {
+  validSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
@@ -61,7 +61,7 @@ class EditRating extends React.Component {
             this.setState({isLoading: false});
             this.props.history.goBack();
           })
-          .catch(err => {
+          .catch((err) => {
             this.setState({isLoading: false});
             errorAlert('Erro', `Erro de gravação (${err})`, 5);
           });
@@ -69,7 +69,7 @@ class EditRating extends React.Component {
     });
   };
 
-  handleResult = value => {
+  handleResult = (value) => {
     this.setState(
       {
         data: {
@@ -118,9 +118,9 @@ class EditRating extends React.Component {
           actions={actions}>
           <Form onSubmit={this.validSubmit} colon={false} layout={'vertical'}>
             <Title level={4}>
-              {this.state.data.item.key} - {this.state.data.item.name}
+              {this.state.data.itemKey} - {this.state.data.itemName}
             </Title>
-            {this.state.data.item.text.split('\n', 3).map(lin => (
+            {this.state.data.itemText.split('\n', 3).map((lin) => (
               <div key={lin}>{lin}</div>
             ))}
             <Divider />
@@ -143,7 +143,7 @@ class EditRating extends React.Component {
                   }}
                   disabled={this.state.data.dateOk !== null}>
                   <Select.Option value={''}>-----</Select.Option>
-                  {this.state.results.map(item => (
+                  {this.state.results.map((item) => (
                     <Select.Option key={item.key} value={item.key}>
                       {item.name}
                     </Select.Option>
@@ -187,7 +187,7 @@ class EditRatingPage extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     ...state,
   };
