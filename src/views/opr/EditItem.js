@@ -264,7 +264,7 @@ class EditItem extends React.Component {
               })(
                 <Input
                   placeholder="Código"
-                  style={{width: '50%'}}
+                  style={{width: '30%'}}
                   disabled={this.props.match.params.id !== '+'}
                 />,
               )}
@@ -274,27 +274,22 @@ class EditItem extends React.Component {
                 rules: [
                   {
                     required: true,
-                    message: 'Informe o nome da área',
+                    message: 'Informe o nome do item',
                   },
                 ],
                 initialValue: this.state.data.name,
-              })(<Input placeholder="Nome" />)}
+              })(<Input placeholder="Nome" style={{width: '50%'}} />)}
             </Form.Item>
-            <Form.Item label={'Texto de verificação'}>
+            <Form.Item label={'Descrição'}>
               {getFieldDecorator('text', {
                 rules: [
                   {
                     required: true,
-                    message: 'Informe o texto de conformidade',
+                    message: 'Informe o texto de descrição',
                   },
                 ],
                 initialValue: this.state.data.text,
-              })(
-                <Input.TextArea
-                  placeholder="Texto para verificação de conformidade"
-                  rows={3}
-                />,
-              )}
+              })(<Input placeholder="Descrição" />)}
             </Form.Item>
 
             <Tabs defaultActiveKey="1" onChange={this.setTab}>
