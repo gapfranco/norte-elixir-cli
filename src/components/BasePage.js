@@ -162,15 +162,17 @@ class BasePage extends React.Component {
                 </Menu.Item>
 
                 <Menu.Item
+                  key="actions"
+                  onClick={() => this.handleLink('/report-result')}>
+                  <Icon type="file-text" />
+                  Relatório
+                </Menu.Item>
+
+                <Menu.Item
                   key="events"
                   onClick={() => this.handleLink('/events')}>
                   <Icon type="thunderbolt" />
                   Apontamentos
-                </Menu.Item>
-
-                <Menu.Item key="actions" onClick={() => this.handleLink('/')}>
-                  <Icon type="carry-out" />
-                  Ações
                 </Menu.Item>
               </SubMenu>
             </Menu>

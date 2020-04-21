@@ -116,3 +116,34 @@ export function listAllRatings(page = 0, limit = 0, filter = null) {
   };
   return axios.post(`${apiUrl}`, body, getAuthHeader());
 }
+
+export function reportRatings(filter) {
+  // const q = filter ? `, filter: {matching: "${filter}"}` : '';
+  const gql = `
+  query($dateIni: String, $dateEnd: String, $process: String, $area: String, $risk: String) {
+    ratingsReport(dateIni: $dateIni dateEnd: $dateEnd process: $process risk: $risk area: $area) {
+        id
+        dateDue
+        dateOk
+        result
+        itemKey itemName itemText
+        unitKey unitName
+        areaKey areaName
+        riskKey riskName
+        processKey processName
+        uid notes
+    }
+  }
+  `;
+  const body = {
+    query: gql,
+    variables: {
+      dateIni: filter.date_ini,
+      dateEnd: filter.date_end,
+      process: filter.process,
+      area: filter.area,
+      risk: filter.risk,
+    },
+  };
+  return axios.post(`${apiUrl}`, body, getAuthHeader());
+}
