@@ -120,8 +120,8 @@ export function listAllRatings(page = 0, limit = 0, filter = null) {
 export function reportRatings(filter) {
   // const q = filter ? `, filter: {matching: "${filter}"}` : '';
   const gql = `
-  query($dateIni: String, $dateEnd: String, $process: String, $area: String, $risk: String) {
-    ratingsReport(dateIni: $dateIni dateEnd: $dateEnd process: $process risk: $risk area: $area) {
+  query($dateIni: String, $dateEnd: String, $process: String, $area: String, $risk: String, $item: String, $unit: String) {
+    ratingsReport(dateIni: $dateIni dateEnd: $dateEnd process: $process risk: $risk area: $area item: $item unit: $unit) {
         id
         dateDue
         dateOk
@@ -143,6 +143,8 @@ export function reportRatings(filter) {
       process: filter.process,
       area: filter.area,
       risk: filter.risk,
+      item: filter.item,
+      unit: filter.unit,
     },
   };
   return axios.post(`${apiUrl}`, body, getAuthHeader());

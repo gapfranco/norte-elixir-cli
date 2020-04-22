@@ -11,6 +11,8 @@ import {reportRatings} from '~/src/services/ratingsApi';
 import {listAreas} from '~/src/services/areasApi';
 import {listRisks} from '~/src/services/risksApi';
 import {listProcesses} from '~/src/services/processesApi';
+import {listItems} from '~/src/services/itemsApi';
+import {listUnits} from '~/src/services/unitsApi';
 
 class ReportResult extends React.Component {
   constructor(props) {
@@ -29,10 +31,14 @@ class ReportResult extends React.Component {
     const res1 = await listAreas(1, 1000);
     const res2 = await listRisks(1, 1000);
     const res3 = await listProcesses(1, 1000);
+    const res4 = await listItems(1, 1000);
+    const res5 = await listUnits(1, 1000);
     this.setState({
       areas: res1.data.data.areas.list,
       risks: res2.data.data.risks.list,
       processes: res3.data.data.processes.list,
+      items: res4.data.data.items.list,
+      units: res5.data.data.units.list,
       loaded: true,
     });
   };
@@ -40,7 +46,6 @@ class ReportResult extends React.Component {
   validSubmit = (e) => {
     e.preventDefault();
     reportRatings(this.state.filter).then((resp) => {
-      console.log(resp);
       this.setState({
         data: resp.data.data.ratingsReport,
         show: !this.state.show,
@@ -64,7 +69,7 @@ class ReportResult extends React.Component {
     if (!this.state.loaded) {
       return null;
     }
-    console.log(this.state);
+    // console.log(this.state);
     let actions = [];
     actions.push(
       <Button
@@ -74,9 +79,9 @@ class ReportResult extends React.Component {
         Processar
       </Button>,
     );
-    actions.push(
-      <Button onClick={() => this.props.history.goBack()}>Voltar</Button>,
-    );
+    // actions.push(
+    //   <Button onClick={() => this.props.history.goBack()}>Voltar</Button>,
+    // );
     return (
       <>
         <Row type="flex" justify="start" align="middle">
@@ -100,11 +105,35 @@ class ReportResult extends React.Component {
                   onChange={(text) => this.handleBase('date_end', text)}
                 />
               </Form.Item>
+              <Form.Item label={'Item'}>
+                <Select
+                  onChange={(text) => this.handleBase('item', text)}
+                  style={{width: 200}}>
+                  <Select.Option value={''}>&nbsp;</Select.Option>
+                  {this.state.items.map((item) => (
+                    <Select.Option key={item.key} value={item.key}>
+                      {item.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              <Form.Item label={'Unidade'}>
+                <Select
+                  onChange={(text) => this.handleBase('unit', text)}
+                  style={{width: 200}}>
+                  <Select.Option value={''}>&nbsp;</Select.Option>
+                  {this.state.units.map((unit) => (
+                    <Select.Option key={unit.key} value={unit.key}>
+                      {unit.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
               <Form.Item label={'Área'}>
                 <Select
                   onChange={(text) => this.handleBase('area', text)}
                   style={{width: 200}}>
-                  <Select.Option value={''}>Todas</Select.Option>
+                  <Select.Option value={''}>&nbsp;</Select.Option>
                   {this.state.areas.map((item) => (
                     <Select.Option key={item.key} value={item.key}>
                       {item.name}
@@ -116,7 +145,7 @@ class ReportResult extends React.Component {
                 <Select
                   onChange={(text) => this.handleBase('risk', text)}
                   style={{width: 200}}>
-                  <Select.Option value={''}>Todos</Select.Option>
+                  <Select.Option value={''}>&nbsp;</Select.Option>
                   {this.state.risks.map((item) => (
                     <Select.Option key={item.key} value={item.key}>
                       {item.name}
@@ -128,7 +157,7 @@ class ReportResult extends React.Component {
                 <Select
                   onChange={(text) => this.handleBase('process', text)}
                   style={{width: 200}}>
-                  <Select.Option value={''}>Todos</Select.Option>
+                  <Select.Option value={''}>&nbsp;</Select.Option>
                   {this.state.processes.map((item) => (
                     <Select.Option key={item.key} value={item.key}>
                       {item.name}
@@ -141,7 +170,7 @@ class ReportResult extends React.Component {
         </Row>
         {this.state.show && this.state.data && (
           <NewWindow
-            title="Relatório"
+            title="Relatório de conformidade"
             features={{width: 1500, height: 900}}
             onUnload={() => this.setState({show: false})}>
             {report(this.state.data)}
@@ -152,42 +181,107 @@ class ReportResult extends React.Component {
   }
 }
 
-const report = (data) => (
-  <table cellPadding="6px" border="1px">
-    <thead>
-      <tr style={{backgroundColor: '#ccc'}}>
-        <th>ITEM</th>
-        <th>NOME</th>
-        <th>UNIDADE</th>
-        <th>RESPONSÁVEL</th>
-        <th>DATA</th>
-        <th>RESPOSTA</th>
-        <th>RESULTADO</th>
-        <th>NOTAS</th>
-        <th>RISCO</th>
-        <th>AREA</th>
-        <th>PROCESSO</th>
-      </tr>
-    </thead>
-    <tbody>
-      {data.map((lin) => (
-        <tr key={lin.id}>
-          <td>{lin.itemKey}</td>
-          <td>{lin.itemName}</td>
-          <td>{lin.unitName}</td>
-          <td>{lin.uid}</td>
-          <td>{lin.dateDue}</td>
-          <td>{lin.dateOk}</td>
-          <td>{lin.result}</td>
-          <td>{lin.notes}</td>
-          <td>{lin.riskName}</td>
-          <td>{lin.areaName}</td>
-          <td>{lin.processName}</td>
-        </tr>
+const monta = (data) => {
+  let parte = [];
+  let ant = '';
+
+  for (const lin of data) {
+    if (lin.itemKey !== ant) {
+      parte.push([lin.itemKey, lin.itemName, [lin]]);
+      ant = lin.itemKey;
+    } else {
+      parte[parte.length - 1][2].push(lin);
+    }
+  }
+  console.log(parte);
+  return parte;
+};
+
+const report = (data) => {
+  const lins = monta(data);
+  return (
+    <>
+      {lins.map((lin) => (
+        <table
+          key={lin[0]}
+          cellPadding="4px"
+          border="1px"
+          style={{margin: '8px'}}>
+          <thead>
+            <tr style={{backgroundColor: '#ccc'}}>
+              <th colSpan={9}>{lin[0]}</th>
+            </tr>
+            <tr>
+              <th colSpan={9}>{lin[1]}</th>
+            </tr>
+            <tr style={{backgroundColor: '#ccc'}}>
+              <th>Unidade</th>
+              <th>Responsável</th>
+              <th>Data</th>
+              <th>Resposta</th>
+              <th>Resultado</th>
+              <th>Notas</th>
+              <th>Risco</th>
+              <th>Area</th>
+              <th>Processo</th>
+            </tr>
+          </thead>
+          <tbody>
+            {lin[2].map((lin) => (
+              <tr key={lin.id}>
+                <td>{lin.unitName}</td>
+                <td>{lin.uid}</td>
+                <td>{lin.dateDue}</td>
+                <td>{lin.dateOk}</td>
+                <td>{lin.result}</td>
+                <td width="20%">{lin.notes}</td>
+                <td>{lin.riskName}</td>
+                <td>{lin.areaName}</td>
+                <td>{lin.processName}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       ))}
-    </tbody>
-  </table>
-);
+    </>
+  );
+};
+
+// return (
+//   <table cellPadding="4px" border="1px">
+//     <thead>
+//       <tr style={{backgroundColor: '#ccc'}}>
+//         <th>ITEM</th>
+//         <th>UNIDADE</th>
+//         <th>RESPONSÁVEL</th>
+//         <th>DATA</th>
+//         <th>RESPOSTA</th>
+//         <th>RESULTADO</th>
+//         <th>NOTAS</th>
+//         <th>RISCO</th>
+//         <th>AREA</th>
+//         <th>PROCESSO</th>
+//       </tr>
+//     </thead>
+//     <tbody>
+//       {data.map((lin) => (
+//         <tr key={lin.id}>
+//           <td>{lin.itemName}</td>
+//           <td>{lin.unitName}</td>
+//           <td>{lin.uid}</td>
+//           <td>{lin.dateDue}</td>
+//           <td>{lin.dateOk}</td>
+//           <td>{lin.result}</td>
+//           <td width="20%">{lin.notes}</td>
+//           <td>{lin.riskName}</td>
+//           <td>{lin.areaName}</td>
+//           <td>{lin.processName}</td>
+//         </tr>
+//       ))}
+//     </tbody>
+//   </table>
+// );
+// };
 
 class ReportResultPage extends React.Component {
   render() {
