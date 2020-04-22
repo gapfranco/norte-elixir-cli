@@ -2,7 +2,7 @@ import React from 'react';
 
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
-import {Button, Row, Card, Form, Input, Select, DatePicker} from 'antd';
+import {Button, Row, Card, Form, Select, DatePicker} from 'antd';
 import BasePage from '~/src/components/BasePage';
 import NewWindow from 'react-new-window';
 import {omit} from 'lodash';
